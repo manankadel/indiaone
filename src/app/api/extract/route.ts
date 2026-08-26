@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { EVIDENCE_FIXTURES, SEEDED_FACTS } from "@/lib/fixtures";
+import { EVIDENCE_FIXTURES, SEEDED_FACTS_A, SEEDED_FACTS_B, SEEDED_FACTS_C } from "@/lib/fixtures";
 import { ALLOWED_EVIDENCE_IDS, makeRequestId, rateLimit } from "@/lib/api";
 
 export const runtime = "nodejs";
@@ -40,12 +40,13 @@ export async function POST(req: NextRequest) {
   const selected = EVIDENCE_FIXTURES.filter(f => evidenceIds.includes(f.id));
   const evidenceText = selected.map(f => `[${f.id} | ${f.type}] ${f.title}: ${f.excerpt}`).join("\n");
 
+  const ALL_SEEDED = [...SEEDED_FACTS_A, ...SEEDED_FACTS_B, ...SEEDED_FACTS_C];
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return jsonWithId({
       mode: "fixture",
       latencyMs: Date.now() - start,
-      facts: SEEDED_FACTS.filter(f => evidenceIds.includes(f.sourceEvidenceId)),
+      facts: ALL_SEEDED.filter(f => evidenceIds.includes(f.sourceEvidenceId)),
       model: "fixture-deterministic-v1",
       requestId,
       note: "No OPENAI_API_KEY — deterministic fallback. Demo never breaks.",
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
     return jsonWithId({
       mode:"fallback",
       latencyMs: Date.now()-start,
-      facts: SEEDED_FACTS.filter(f => evidenceIds.includes(f.sourceEvidenceId)),
+      facts: ALL_SEEDED.filter(f => evidenceIds.includes(f.sourceEvidenceId)),
       model: "fixture-deterministic-v1",
       requestId,
       errorCode: isAbort ? "timeout_8s" : "extraction_failed",
