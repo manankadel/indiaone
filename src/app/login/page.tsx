@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("citizen@indiaone.demo");
@@ -19,7 +20,7 @@ export default function LoginPage() {
           <label className="block space-y-1"><span className="text-xs font-medium">Password (mock)</span><input value={pw} onChange={e=>setPw(e.target.value)} className="w-full rounded-xl border border-zinc-300 px-3 py-2.5 text-sm" /></label>
           <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3 text-xs text-zinc-600">Mock creds: <b>citizen@indiaone.demo / demo1234</b> · Another: <b>asha.demo@indiaone.demo / demo1234</b> · No OTP sent — “Send demo code” auto-accepts <b>000000</b>.</div>
           <Button variant="accent" size="lg" className="w-full" onClick={()=>router.push("/#start")}>Enter as mock citizen →</Button>
-          <div className="text-xs text-center text-zinc-500">Or skip login → <a href="/#start" className="underline">Start Fraud First Aid without login</a> (emergency content is public).</div>
+          <div className="text-xs text-center text-zinc-500">Or skip login → <Link href="/#start" className="underline">Start Fraud First Aid without login</Link> (emergency content is public).</div>
         </CardContent>
       </Card>
     </div>

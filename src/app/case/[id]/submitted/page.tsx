@@ -2,7 +2,7 @@
 import { useStore } from "@/lib/store";
 import { Card, CardContent } from "@/components/ui/Card";
 import Link from "next/link";
-import { Check, Clock, ArrowRight } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 
 export default function SubmittedPage() {
   const { c } = useStore();

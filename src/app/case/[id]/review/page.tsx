@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { ShieldAlert } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ReviewPage() {
-  const { c, mockSubmit, setStatus } = useStore();
+  const { c, mockSubmit } = useStore();
+  const router = useRouter();
   const [consent, setConsent] = useState(false);
   if (!c) return <div className="p-10 text-sm">Loading…</div>;
   return (
@@ -26,7 +29,7 @@ export default function ReviewPage() {
       <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-4 flex gap-3">
         <input id="consent" type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} className="mt-1" />
         <label htmlFor="consent" className="text-sm">
-          <span className="font-medium">I understand this is a simulation.</span> No real bank action or police complaint will occur. Data is synthetic, stored only in my browser, and expires in 24h.
+          <span className="font-medium">I understand this is a simulation.</span> No real bank action or police complaint will occur. Data is browser-local demo persistence, and expires in 24h.
         </label>
       </div>
 
@@ -37,9 +40,9 @@ export default function ReviewPage() {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/statement" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Edit</a>
+        <Link href="/case/demo/statement" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Edit</Link>
         <Button variant="accent" size="lg" className="flex-1" disabled={!consent} onClick={()=>{
-          mockSubmit(); location.href="/case/demo/submitted";
+          mockSubmit(); router.push("/case/demo/submitted");
         }}>
           Simulate report submission
         </Button>

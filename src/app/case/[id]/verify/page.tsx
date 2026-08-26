@@ -3,9 +3,12 @@ import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function VerifyPage() {
   const { c, updateFact, setStatus } = useStore();
+  const router = useRouter();
   const [edits, setEdits] = useState<Record<string,string>>({});
   if (!c) return <div className="p-10 text-sm">Loading…</div>;
   const allConfirmed = c.facts.every(f=> f.status==="confirmed" || f.status==="edited");
@@ -49,8 +52,8 @@ export default function VerifyPage() {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/evidence" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</a>
-        <Button variant="accent" size="lg" className="flex-1" disabled={!allConfirmed} onClick={()=>{ setStatus("statement"); location.href="/case/demo/statement"; }}>
+        <Link href="/case/demo/evidence" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</Link>
+        <Button variant="accent" size="lg" className="flex-1" disabled={!allConfirmed} onClick={()=>{ setStatus("statement"); router.push("/case/demo/statement"); }}>
           {allConfirmed ? "All confirmed — build timeline →" : `Confirm all (${c.facts.filter(f=>f.status==="pending").length} left)`}
         </Button>
       </div>

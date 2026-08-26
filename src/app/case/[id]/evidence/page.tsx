@@ -5,9 +5,16 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { useState } from "react";
 import { Image as ImgIcon, Check, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import type { ExtractedFact } from "@/lib/types";
+import { BUCKETS, logEvent } from "@/lib/analytics";
+
+type GatewayFact = Partial<ExtractedFact> & { field?: string; value?: string };
 
 export default function EvidencePage() {
   const { c, setCase, setStatus } = useStore();
+  const router = useRouter();
   const [sel, setSel] = useState<string[]>(c?.evidenceIds ?? ["fx_sms_hdfc", "fx_phonepe"]);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<string | null>(null);
@@ -17,32 +24,34 @@ export default function EvidencePage() {
   const extract = async () => {
     setLoading(true);
     setMode(null);
+    const t0 = Date.now();
     try {
       const res = await fetch("/api/extract", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ evidenceIds: sel }) });
-      const json = await res.json();
+      const json: { mode?: string; facts?: GatewayFact[]; latencyMs?: number } = await res.json() as { mode?: string; facts?: GatewayFact[]; latencyMs?: number };
       setMode(json.mode ?? "fixture");
-      // attach fresh facts from gateway, keep seeded structure but merge
+      logEvent({ name:"ai_extraction_completed", props:{ mode: json.mode ?? "fixture", latency_bucket: BUCKETS.latency(Date.now()-t0), fallback: json.mode!=="openai", field_count: json.facts?.length ?? 0 } });
+      logEvent({ name:"evidence_fixture_selected", props:{ count_bucket: BUCKETS.count(sel.length), types: sel.map(s=>s.slice(0,3)).join(",") } });
       if (json.facts?.length) {
-        const mapped = json.facts.map((f: any) => ({
-          id: f.id ?? `f_${f.field}`,
-          field: f.field,
-          label: f.label ?? f.field,
-          value: f.value,
-          sourceEvidenceId: f.sourceEvidenceId,
+        const mapped: ExtractedFact[] = json.facts.map((f) => ({
+          id: f.id ?? `f_${String(f.field)}`,
+          field: (f.field as ExtractedFact["field"]) ?? "amount",
+          label: f.label ?? String(f.field ?? "field"),
+          value: String(f.value ?? ""),
+          sourceEvidenceId: f.sourceEvidenceId ?? sel[0] ?? "fx_sms_hdfc",
           sourceExcerpt: f.sourceExcerpt,
-          confidence: f.confidence ?? "medium",
+          confidence: (f.confidence as ExtractedFact["confidence"]) ?? "medium",
           status: "pending" as const,
         }));
-        setCase({ ...c, evidenceIds: sel, facts: mapped, status: "verify" } as any);
+        setCase({ ...c, evidenceIds: sel, facts: mapped, status: "verify" });
       } else {
-        setCase({ ...c, evidenceIds: sel, status: "verify" } as any);
+        setCase({ ...c, evidenceIds: sel, status: "verify" });
       }
       setStatus("verify");
-      location.href = "/case/demo/verify";
+      router.push("/case/demo/verify");
     } catch {
-      setCase({ ...c, evidenceIds: sel, status: "verify" } as any);
+      setCase({ ...c, evidenceIds: sel, status: "verify" });
       setStatus("verify");
-      location.href = "/case/demo/verify";
+      router.push("/case/demo/verify");
     } finally { setLoading(false); }
   };
 
@@ -78,7 +87,7 @@ export default function EvidencePage() {
       </Card>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/transaction" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</a>
+        <Link href="/case/demo/transaction" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</Link>
         <Button variant="accent" size="lg" className="flex-1" disabled={sel.length===0 || loading} onClick={extract}>
           {loading ? <><Loader2 className="animate-spin" size={16} /> Extracting…</> : "Extract with AI →"}
         </Button>

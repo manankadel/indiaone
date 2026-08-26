@@ -5,10 +5,13 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { useState } from "react";
 import VoiceIntake from "@/components/voice/VoiceIntake";
 import { useI18n } from "@/lib/i18n/context";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function StatementPage() {
   const { c, setCase, setStatus } = useStore();
   const { locale } = useI18n();
+  const router = useRouter();
   const [statement, setStatement] = useState(c?.statement ?? "");
   if (!c) return <div className="p-10 text-sm">Loading…</div>;
   return (
@@ -40,9 +43,9 @@ export default function StatementPage() {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/verify" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</a>
+        <Link href="/case/demo/verify" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</Link>
         <Button variant="accent" size="lg" className="flex-1" onClick={()=>{
-          setCase({...c, statement, status:"review"}); setStatus("review"); location.href="/case/demo/review";
+          setCase({...c, statement, status:"review"}); setStatus("review"); router.push("/case/demo/review");
         }}>Save statement → review</Button>
       </div>
     </div>

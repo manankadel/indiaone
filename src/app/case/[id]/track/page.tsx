@@ -1,6 +1,7 @@
 "use client";
 import { useStore } from "@/lib/store";
 import { Card, CardContent } from "@/components/ui/Card";
+import Link from "next/link";
 
 const TIMELINE = [
   { at: "26 Aug 2026, 11:43", owner: "citizen", text: "Case created · synthetic · v1" },
@@ -41,8 +42,8 @@ export default function TrackPage() {
       </Card>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/submitted" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back to acknowledgement</a>
-        <a href="/" className="flex-1 rounded-full bg-[#FF5A1F] text-white py-3 text-center text-sm font-semibold">Back to home</a>
+        <Link href="/case/demo/submitted" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back to acknowledgement</Link>
+        <Link href="/" className="flex-1 rounded-full bg-[#FF5A1F] text-white py-3 text-center text-sm font-semibold">Back to home</Link>
       </div>
     </div>
   );

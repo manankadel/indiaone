@@ -11,10 +11,11 @@ import VoiceIntake from "@/components/voice/VoiceIntake";
 import { useState } from "react";
 
 export default function Home() {
-  const { c, setStatus } = useStore();
+  const { c, setStatus, loadSeededCase } = useStore();
   const { t, locale } = useI18n();
   const router = useRouter();
   const [voiceText, setVoiceText] = useState("");
+  const [seedKey, setSeedKey] = useState<string>("upi_collect");
   if (!c) return <div className="p-10 text-sm text-zinc-600">Loading demo case…</div>;
   return (
     <div>
@@ -36,6 +37,20 @@ export default function Home() {
               <VoiceIntake lang={locale==="hi" ? "hi-IN" : "en-IN"} onTranscript={setVoiceText} placeholder={locale==="hi" ? "बोलें — जैसे 'मेरे खाते से 48,500 कट गए'" : "Try: '48500 debited via UPI at 11:42'"} />
               {voiceText && <div className="mt-2 rounded-xl bg-zinc-900 text-white px-3 py-2 text-sm">Transcript: {voiceText} <span className="opacity-60">· text remains baseline, editable</span></div>}
               <div className="mt-1 text-[11px] text-zinc-500">Text is baseline — voice never required. Works in Chrome/Edge desktop & Android; fallback is typing.</div>
+            </div>
+
+            <div className="mt-4 rounded-[16px] border border-zinc-200 bg-white p-3">
+              <div className="text-xs font-semibold tracking-widest text-zinc-500">3 SEEDED FRAUD STORIES (audit requirement) — pick demo</div>
+              <div className="mt-2 grid grid-cols-3 gap-2">
+                {[
+                  { key: "upi_collect", label: "UPI ₹48.5k" },
+                  { key: "card_intl", label: "Card $149.99" },
+                  { key: "wallet", label: "Wallet ₹7.5k" },
+                ].map(opt => (
+                  <button key={opt.key} onClick={()=>{ setSeedKey(opt.key); loadSeededCase(opt.key as "upi_collect" | "card_intl" | "wallet"); }} className={`rounded-xl border px-3 py-2 text-sm font-medium ${seedKey===opt.key ? "bg-zinc-900 text-white border-zinc-900" : "bg-white border-zinc-200 hover:bg-zinc-50"}`}>{opt.label}</button>
+                ))}
+              </div>
+              <div className="mt-2 text-xs text-zinc-500">Browser-local demo persistence only — selected case loads into /case/demo/* flow. No server DB. Production would use Postgres + audit log.</div>
             </div>
 
             <div id="start" className="mt-4 rounded-[20px] border border-zinc-200 bg-white p-4 sm:p-5 shadow-sm">

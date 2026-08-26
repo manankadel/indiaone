@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Shield, Menu, X, Globe } from "lucide-react";
+import { Shield, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { StoreProvider } from "@/lib/store";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";

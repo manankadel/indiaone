@@ -3,11 +3,15 @@ import { useStore } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/Card";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import type { CitizenCase } from "@/lib/types";
 
 export default function TransactionPage() {
   const { c, setCase, setStatus } = useStore();
-  const [form, setForm] = useState(c?.transaction ?? {
-    rail: "UPI" as const, amount: 48500, occurredAt: "2026-08-26T11:42", reference: "321768904512", institution: "HDFC Bank · UPI via PhonePe", recipient: "collect@oksbi", authorized: false as boolean
+  const router = useRouter();
+  const [form, setForm] = useState<NonNullable<CitizenCase["transaction"]>>(c?.transaction ?? {
+    rail: "UPI" as const, amount: 48500, occurredAt: "2026-08-26T11:42", reference: "321768904512", institution: "HDFC Bank · UPI via PhonePe", recipient: "collect@oksbi", authorized: false
   });
   if (!c) return <div className="p-10 text-sm">Loading…</div>;
   return (
@@ -20,7 +24,7 @@ export default function TransactionPage() {
         <CardHeader className="pb-2"><div className="text-sm font-semibold">Transaction facts</div><div className="text-xs text-zinc-500">Currency: INR · Screen-reader legible · Validation on blur</div></CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-4">
           <label className="space-y-1"> <span className="text-xs font-medium">Payment rail *</span>
-            <select value={form.rail} onChange={e=>setForm({...form, rail: e.target.value as any})} className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm">
+            <select value={form.rail} onChange={e=>setForm({...form, rail: e.target.value as CitizenCase["transaction"] extends infer T ? T extends { rail: infer R } ? R : never : never})} className="w-full rounded-xl border border-zinc-300 bg-white px-3 py-2.5 text-sm">
               <option>UPI</option><option>Card</option><option>BankTransfer</option><option>Wallet</option>
             </select>
           </label>
@@ -43,13 +47,13 @@ export default function TransactionPage() {
         </CardContent>
       </Card>
 
-      <div className="mt-4 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600">We store this only as a synthetic case in your browser. Autosave idle + on navigate. No real OTP. Refresh keeps progress.</div>
+      <div className="mt-4 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600">We store this only as browser-local demo persistence. Refresh keeps progress on this device; no server DB. No real OTP.</div>
 
       <div className="mt-6 flex gap-3">
-        <a href="/case/demo/contain" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</a>
+        <Link href="/case/demo/contain" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</Link>
         <Button variant="accent" size="lg" className="flex-1" onClick={() => {
-          setCase({ ...c, transaction: form as any, status: "evidence" });
-          setStatus("evidence"); location.href="/case/demo/evidence";
+          setCase({ ...c, transaction: form, status: "evidence" });
+          setStatus("evidence"); router.push("/case/demo/evidence");
         }}>Save & continue to evidence →</Button>
       </div>
     </div>

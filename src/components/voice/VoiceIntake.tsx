@@ -1,34 +1,54 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Mic, MicOff, Languages } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 type Props = {
-  lang?: string; // e.g., "en-IN" or "hi-IN"
+  lang?: string;
   onTranscript: (text: string) => void;
   placeholder?: string;
 };
 
+type SpeechRecognitionAlternative = { transcript: string };
+type SpeechRecognitionResult = { isFinal: boolean; 0: SpeechRecognitionAlternative; length: number };
+type SpeechRecognitionEvent = { resultIndex: number; results: SpeechRecognitionResult[] };
+type SpeechRecognitionInstance = {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  onresult: ((e: SpeechRecognitionEvent) => void) | null;
+  onend: (() => void) | null;
+  onerror: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+type SpeechRecognitionCtor = new () => SpeechRecognitionInstance;
+
+declare global {
+  interface Window {
+    webkitSpeechRecognition?: SpeechRecognitionCtor;
+    SpeechRecognition?: SpeechRecognitionCtor;
+  }
+}
+
 export default function VoiceIntake({ lang = "en-IN", onTranscript, placeholder }: Props) {
   const [recording, setRecording] = useState(false);
-  const [supported, setSupported] = useState(true);
+  const [supported, setSupported] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return !!(window.webkitSpeechRecognition ?? window.SpeechRecognition);
+  });
   const [interim, setInterim] = useState("");
-  const recRef = useRef<any>(null);
-
-  useEffect(() => {
-    const SR: any = (typeof window !== "undefined" && (window as any).webkitSpeechRecognition) || (typeof window !== "undefined" && (window as any).SpeechRecognition);
-    if (!SR) setSupported(false);
-  }, []);
+  const recRef = useRef<SpeechRecognitionInstance | null>(null);
 
   const start = () => {
-    const SR: any = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+    const SR = window.webkitSpeechRecognition ?? window.SpeechRecognition;
     if (!SR) { setSupported(false); return; }
     const rec = new SR();
     recRef.current = rec;
     rec.lang = lang;
     rec.interimResults = true;
     rec.continuous = false;
-    rec.onresult = (e: any) => {
+    rec.onresult = (e: SpeechRecognitionEvent) => {
       let text = "";
       let interimText = "";
       for (let i = e.resultIndex; i < e.results.length; i++) {
@@ -46,7 +66,7 @@ export default function VoiceIntake({ lang = "en-IN", onTranscript, placeholder 
   };
 
   const stop = () => {
-    try { recRef.current?.stop(); } catch {}
+    try { recRef.current?.stop(); } catch { /* ignore */ }
     setRecording(false);
   };
 

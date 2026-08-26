@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Phone, Shield, Check } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { logEvent } from "@/lib/analytics";
 
 const TASKS = [
   { id: "1930", title: "Call 1930 — National Cybercrime helpline", desc: "For financial fraud, seconds matter. We’ll prep your transaction facts while you call.", action: "tel:1930", urgent: true },
@@ -16,6 +18,7 @@ const TASKS = [
 export default function ContainPage() {
   const { c, setStatus } = useStore();
   const [done, setDone] = useState<Record<string, boolean>>({});
+  const router = useRouter();
   if (!c) return <div className="p-10 text-sm">Loading…</div>;
   return (
     <div className="mx-auto max-w-[880px] px-4 sm:px-6 py-6">
@@ -54,7 +57,7 @@ export default function ContainPage() {
 
       <div className="mt-6 flex gap-3">
         <Link href="/" className="rounded-full border border-zinc-300 bg-white px-6 py-3 text-sm font-medium">Back</Link>
-        <Button variant="accent" size="lg" className="flex-1" onClick={()=>{ setStatus("transaction"); location.href="/case/demo/transaction"; }}>Continue reporting →</Button>
+        <Button variant="accent" size="lg" className="flex-1" onClick={()=>{ logEvent({ name:"containment_viewed", props:{ elapsed_bucket:"<30m" }}); setStatus("transaction"); router.push("/case/demo/transaction"); }}>Continue reporting →</Button>
       </div>
       <p className="mt-3 text-xs text-zinc-500 text-center">You can continue without marking tasks complete — we warn but don’t trap you.</p>
     </div>
