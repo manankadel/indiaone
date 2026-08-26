@@ -1,0 +1,56 @@
+export type Locale = "en" | "hi";
+
+export const dict: Record<Locale, Record<string, string>> = {
+  en: {
+    "brand.sub": "INDEPENDENT PROTOTYPE",
+    "brand.badge": "Not a government site · Demo data only",
+    "nav.services": "Services (10)",
+    "nav.disclosures": "What’s real / mocked",
+    "nav.buildlog": "How we built it",
+    "hero.title1": "Tell us what",
+    "hero.title2": "happened.",
+    "hero.accent": "We find the right service.",
+    "hero.desc": "IndiaOne is an independent prototype for Build What Moves India. One intent-first system, ten public-service modules, one case timeline. No government system is called. No real data is used.",
+    "hero.what": "WHAT HAPPENED? — START HERE",
+    "hero.cta.primary": "Money left my account",
+    "hero.cta.sub": "UPI / card / bank transfer — guide me in order",
+    "hero.demo": "Demo incident prefilled — no OTP needed",
+    "contain.title": "First — contain and preserve",
+    "transaction.title": "What was taken, when?",
+    "evidence.title": "Add evidence — synthetic fixtures",
+    "verify.title": "Confirm what we found",
+    "statement.title": "Your incident statement — editable",
+    "review.title": "Review before simulated submission",
+    "submitted.title": "Mock submission accepted",
+    "common.back": "Back",
+    "common.continue": "Continue",
+  },
+  hi: {
+    "brand.sub": "स्वतंत्र प्रोटोटाइप",
+    "brand.badge": "सरकारी साइट नहीं · केवल डेमो डेटा",
+    "nav.services": "सेवाएँ (10)",
+    "nav.disclosures": "क्या वास्तविक / नकली है",
+    "nav.buildlog": "कैसे बनाया",
+    "hero.title1": "बताइए क्या",
+    "hero.title2": "हुआ।",
+    "hero.accent": "हम सही सेवा ढूंढेंगे।",
+    "hero.desc": "IndiaOne Build What Moves India के लिए स्वतंत्र प्रोटोटाइप है। एक इंटेंट-फ़र्स्ट सिस्टम, दस सेवाएँ, एक केस टाइमलाइन। कोई सरकारी सिस्टम कॉल नहीं। कोई वास्तविक डेटा नहीं।",
+    "hero.what": "क्या हुआ? — यहाँ से शुरू करें",
+    "hero.cta.primary": "मेरे खाते से पैसे कट गए",
+    "hero.cta.sub": "UPI / कार्ड / बैंक ट्रांसफ़र — क्रम में मार्गदर्शन",
+    "hero.demo": "डेमो डेटा पहले से भरा — OTP नहीं चाहिए",
+    "contain.title": "पहले — रोकें और सुरक्षित रखें",
+    "transaction.title": "क्या, कब कटा?",
+    "evidence.title": "सबूत जोड़ें — डेमो फ़िक्स्चर",
+    "verify.title": "जो मिला उसकी पुष्टि करें",
+    "statement.title": "आपका विवरण — संपादन योग्य",
+    "review.title": "नकली सबमिशन से पहले समीक्षा",
+    "submitted.title": "नकली सबमिशन स्वीकार",
+    "common.back": "वापस",
+    "common.continue": "आगे बढ़ें",
+  },
+};
+
+export function t(locale: Locale, key: string) {
+  return dict[locale]?.[key] ?? dict.en[key] ?? key;
+}
