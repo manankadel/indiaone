@@ -3,16 +3,16 @@ import { Card, CardContent } from "@/components/ui/Card";
 const LOG = [
   {
     date: "2026-08-26 09:30 IST",
-    prompt: "Mundhe FDA nationwide: photo + GPS + violation chips + 72h public timeline + owner public.",
+    prompt: "Food-safety only: evidence + location + violation chips + visible status timeline.",
     files: "src/lib/services.ts (fda only), src/lib/fixtures.ts (FOOD_FIXTURES), src/app/food/*",
-    human: "Made food-only flagship: 3 cases (milk Beed, hotel Nagpur, Zepto Pune) from Mundhe 1,131/49.57cr/56-suspend. Removed 10-service grid — single severe problem per brief.",
-    test: "Home shows Milawat dikha? Photo bhejo → /food → 72h track. No Jaipur typing.",
+    human: "Made a food-safety flagship: 3 synthetic cases (milk Beed, hotel Nagpur, dark store Pune). Removed the 10-service grid and focused on one serious public problem.",
+    test: "Home shows the food-safety flow → /food → synthetic status tracker. No city-search detour.",
   },
   {
     date: "2026-08-26 15:00 IST",
-    prompt: "Rebuild entire app food-only: remove Services 10, keep Fraud as hidden slice not hero, disclosures food-specific, Hinglish default.",
+    prompt: "Rebuild the product around food safety only; remove unrelated service journeys and make the evidence trail explicit.",
     files: "src/app/page.tsx, src/components/shell/Shell.tsx (food nav), src/app/disclosures/page.tsx",
-    human: "Stripped IRCTC/EPFO/etc from nav and hero. Food is single problem — judges see one consequence: milawat. Kept Codex gateway for FSSAI extract.",
+    human: "Stripped unrelated government journeys from nav and hero. Food safety is the single problem; the demo keeps evidence and status visible.",
     test: "curl /food 200, /services 404 (removed), lint 0, build pass.",
   },
 ];
@@ -22,7 +22,7 @@ export default function BuildLog() {
     <div className="mx-auto max-w-[1160px] px-4 sm:px-6 py-6">
       <div className="text-xs font-semibold tracking-widest text-zinc-500">CODEX · MUNDHE FOOD — EVIDENCE</div>
       <h1 className="mt-2 text-3xl font-semibold tracking-tight">How we built Mundhe Food Suraksha — nationwide</h1>
-      <p className="mt-2 text-zinc-600 max-w-3xl">Mundhe did 25 transfers, time-bound, owner public. We made system beats person: 72h SLA, photo GPS, cost owner. Codex scaffolded, humans enforced honesty.</p>
+      <p className="mt-2 text-zinc-600 max-w-3xl">The product takes inspiration from reported Maharashtra FDA enforcement, but keeps every authority action clearly synthetic until official integrations exist.</p>
 
       <div className="mt-6 grid gap-4">
         {LOG.map((e, i) => (
@@ -47,17 +47,17 @@ export default function BuildLog() {
       <Card className="mt-6 border-red-200 bg-red-50"><CardContent className="p-5">
         <div className="font-semibold text-red-900">Mundhe principle in code</div>
         <ul className="mt-2 text-sm text-red-800 list-disc pl-5 space-y-1">
-          <li>Photo + GPS = no address typing, no patwari discretion — rule-based routing to Ward FDA (FSS Act/MRTP).</li>
-           <li>Officer name public + 72h SLA = time-bound, result-oriented — his walk transparency.</li>
-           <li>Cost recovery from owner = taxpayer not paying for illegal — NMMC/CIDCO precedent digitally.</li>
-           <li>25 transfers proof: system beats person — honest officer does not need to be transferred.</li>
+           <li>Photo + location reduces typing; production routing still needs official jurisdiction data and officer review.</li>
+           <li>Status events are visible and time-bound as a proposed product target; no government SLA is claimed.</li>
+           <li>Enforcement outcomes are recorded as verified events; the prototype never promises seizure, closure or cost recovery.</li>
+           <li>Accountability is designed into the audit trail instead of depending on one officer’s visibility.</li>
         </ul>
       </CardContent></Card>
 
       <div className="mt-6 rounded-[20px] border border-zinc-200 bg-white p-6">
         <div className="font-semibold">Food-only — not 10 services</div>
-        <div className="mt-2 text-sm text-zinc-600">Single severe problem: food adulteration nationwide. Not 10 portals redesign. Maharashtra FDA (1,131/49.57cr/56) scaled via GPS-routed State FDA + Central dashboard.</div>
-        <div className="mt-3 font-mono text-xs bg-zinc-50 border border-zinc-200 rounded-xl p-3">indiaone.vercel.app/food · mock FDA MH-FDA-2026-1131</div>
+        <div className="mt-2 text-sm text-zinc-600">Single severe problem: food safety complaints. Not 10 portals redesign. The prototype demonstrates evidence capture, risk triage and transparent status; production routing requires official State FDA/FSSAI systems.</div>
+        <div className="mt-3 font-mono text-xs bg-zinc-50 border border-zinc-200 rounded-xl p-3">/food · synthetic Food Safety Connect-style report</div>
       </div>
     </div>
   );

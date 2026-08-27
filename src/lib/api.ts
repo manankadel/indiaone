@@ -26,4 +26,4 @@ export function rateLimit(key: string, max = 20, windowMs = 60_000): boolean {
   return recent.length <= max;
 }
 
-export const ALLOWED_EVIDENCE_IDS = new Set(["fx_sms_hdfc","fx_phonepe","fx_chat","fx_email","fx_card_alert","fx_wallet_sms"]);
+export const ALLOWED_EVIDENCE_IDS = new Set(["fx_milk_packet","fx_hotel_kitchen","fx_zepto_store"]);
