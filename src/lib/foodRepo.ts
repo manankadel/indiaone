@@ -31,13 +31,13 @@ export function createFoodCase(category: FoodCategory): FoodCase {
 }
 
 export function triagePriority(c: FoodCase): { priority: string; reasons: string[]; scores: { severity:number; exposure:number; urgency:number; evidenceQuality:number } } {
-  // Deterministic rules engine per PRD 8.6 — no opaque AI
+  // Deterministic rules engine per PRD 8.6 — no opaque AI. Evidence alone does NOT prove location.
   let severity = 2, exposure = 2, urgency = 2, evidenceQuality = 1;
   const reasons: string[] = [];
   const hasIllness = c.category === "illness";
   const hasMultipleEvidence = c.evidenceIds.length >= 2;
   const hasIdentifiable = !!c.subject.fssaiNumber || !!c.subject.name;
-  const hasLocation = !!c.subject.addressCoarse || c.evidenceIds.length>0;
+  const hasLocation = !!c.subject.addressCoarse || !!c.subject.geoHash;
 
   if (hasIllness) { severity = 5; reasons.push("Illness cluster reported — potential biological hazard"); }
   else if (c.category === "packaged") { severity = 3; reasons.push("Packaged product — distributed risk"); }
@@ -58,21 +58,39 @@ export function triagePriority(c: FoodCase): { priority: string; reasons: string
   return { priority: priority as any, reasons, scores: { severity, exposure, urgency, evidenceQuality } };
 }
 
-export function routeAuthority(c: FoodCase): { authority: string; reason: string; capability: "demo"; nextAction: string } {
-  // Jurisdiction lookup stub — MH-PUNE default, demo capability
-  if (c.category === "illness") return { authority: "State FDA + NCDC district cell", reason: "Illness cluster — FDA + public-health", capability: "demo", nextAction: "Acknowledged — officer will request meal/order details and onset time" };
-  if (c.category === "delivery") return { authority: "State FDA — online aggregator cell", reason: "Delivery/aggregator order", capability: "demo", nextAction: "Routed to aggregator + State FDA copy" };
-  return { authority: "FSSAI State FDA — Pune (MH)", reason: "Location + FSSAI jurisdiction", capability: "demo", nextAction: "Acknowledged — assigned for inspection triage" };
+export function routeAuthority(c: FoodCase): { authority: string; reason: string; capability: "demo"|"manual_handoff"|"live"; nextAction: string; jurisdictionId: string } {
+  // Jurisdiction lookup — uses geoHash / addressCoarse, not just MH-PUNE. PRD requires official boundary data in production.
+  const loc = (c.subject.geoHash || c.subject.addressCoarse || "").toLowerCase();
+  let jurisdictionId = c.jurisdictionId || "MH-PUNE";
+  let authority = "FSSAI State FDA — Pune (MH)";
+  let reason = "Location + FSSAI jurisdiction (MH-PUNE fallback — official boundary data required in production)";
+  let capability: "demo"|"manual_handoff"|"live" = "demo";
+  let nextAction = "Acknowledged — assigned for inspection triage";
+
+  if (loc.includes("delhi") || loc.includes("dl-")) { jurisdictionId = "DL-CENTRAL"; authority = "FSSAI State FDA — Delhi"; reason = "Jurisdiction from coarse location: Delhi"; }
+  else if (loc.includes("mumbai") || loc.includes("mh-mumbai")) { jurisdictionId = "MH-MUMBAI"; authority = "FSSAI State FDA — Mumbai"; reason = "Jurisdiction from coarse location: Mumbai"; }
+  else if (loc.includes("nagpur")) { jurisdictionId = "MH-NAGPUR"; authority = "FSSAI State FDA — Nagpur"; reason = "Jurisdiction from coarse location: Nagpur"; }
+
+  if (c.category === "illness") { authority = authority.replace("FSSAI State FDA", "State FDA + NCDC district cell"); reason = "Illness cluster — FDA + public-health (NCDC)"; nextAction = "Acknowledged — officer will request meal/order details and onset time"; }
+  else if (c.category === "delivery") { authority = authority.replace("State FDA", "State FDA — online aggregator cell"); reason = "Delivery/aggregator order — State FDA + FSSAI Food Safety Connect copy"; nextAction = "Routed to aggregator + State FDA copy (manual_handoff in production if no API)"; capability = "manual_handoff"; }
+
+  return { authority, reason, capability, nextAction, jurisdictionId };
 }
 
 // Browser-local persistence (honest for hackathon; production → Postgres + PostGIS + events)
-export function saveCase(c: FoodCase) {
+// For audit: officer actions must be recorded with officer identity, not citizen. Use saveCaseWithActor for authority flows.
+export function saveCase(c: FoodCase, actor?: { id: string; role: FoodEvent["actorRole"] }) {
   if (typeof window === "undefined") return;
   const all = loadAllCases();
   const idx = all.findIndex(x=>x.id===c.id);
   if (idx>=0) all[idx]=c; else all.unshift(c);
   localStorage.setItem(CASE_KEY, JSON.stringify(all.slice(0,50)));
-  appendEvent({ id: uid("evt"), caseId: c.id, type: c.status, actorId: "citizen_demo", actorRole: "citizen", visibility: "public", occurredAt: new Date().toISOString() });
+  const act = actor ?? { id: "citizen_demo", role: "citizen" as const };
+  appendEvent({ id: uid("evt"), caseId: c.id, type: c.status, actorId: act.id, actorRole: act.role, visibility: "public", occurredAt: new Date().toISOString() });
+}
+
+export function saveCaseWithActor(c: FoodCase, actorId: string, actorRole: FoodEvent["actorRole"]) {
+  return saveCase(c, { id: actorId, role: actorRole });
 }
 
 export function loadAllCases(): FoodCase[] {

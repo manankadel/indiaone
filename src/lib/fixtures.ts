@@ -10,6 +10,8 @@ export const EVIDENCE_FIXTURES: EvidenceFixture[] = [
   { id: "fx_milk_packet", type: "receipt", title: "Milk Packet — No FSSAI", preview: "🥛", excerpt: "Amul-like packet, MRP ₹28, no FSSAI number, mfg 20-Aug-26, village shop Beed. Photo GPS 18.98,75.78" },
   { id: "fx_hotel_kitchen", type: "url", title: "Hotel Kitchen — Gutkha + Dirty", preview: "🏨", excerpt: "Shiv Sagar Hotel, Nagpur — gutkha sale at counter, kitchen with cockroaches, FSSAI 11524035001234 expired 2024" },
   { id: "fx_zepto_store", type: "receipt", title: "Zepto Dark Store — No License Display", preview: "⚡", excerpt: "Zepto Store, Pune — 2026 FDA raid: no FSSAI display, milk storage 12°C vs required 4°C, stock ₹3.2L" },
+  { id: "fx_illness_cluster", type: "receipt", title: "Illness — 4 People, Same Meal", preview: "🤒", excerpt: "Family meal 25-Aug-26, 4 reported vomiting 6h after paneer, hospital OPD slip, no sample retained" },
+  { id: "fx_packaged_label", type: "receipt", title: "Packaged Label — Expired + Seal Broken", preview: "🏷️", excerpt: "Biscuit pack, expiry 15-Aug-26, seal broken, batch B882, FSSAI 11518011001234" },
 ];
 
 // Food — Mundhe FDA nationwide (1131 inspections, ₹49.57cr seized, 56 licenses suspended, 904 raids — Indian Express July 2026)

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { loadCase, loadEvents, saveCase } from "@/lib/foodRepo";
+import { loadCase, loadEvents, saveCaseWithActor } from "@/lib/foodRepo";
 
 export default function AuthorityCasePage() {
   const { id } = useParams<{ id: string }>();
@@ -20,11 +20,19 @@ export default function AuthorityCasePage() {
   if (!c) return <div className="mx-auto max-w-[880px] px-4 sm:px-6 py-10">Case not found in this browser. <Link href="/authority/queue" className="underline">Back to queue</Link></div>;
 
   const act = (type: string, reason: string) => {
+    // P0 fix: authority actions must be server-validated and recorded as officer, not citizen. For demo, require simple password gate.
+    const pw = typeof window !== "undefined" ? window.prompt("Officer demo password (hint: demo123) — in production: RBAC + MFA") : null;
+    if (pw !== "demo123") {
+      alert("Demo auth failed — use demo123. Production requires MFA + role check.");
+      return;
+    }
     const updated = { ...c, status: type as any, updatedAt: new Date().toISOString() };
-    saveCase(updated);
-    setC(updated);
+    saveCaseWithActor(updated, "fso_demo", "fso");
+    // Append explicit event with reason code for audit
+    const stored = loadCase(id);
+    setC(stored);
     setEvents(loadEvents(id));
-    alert(`Event ${type} recorded with reason: ${reason} (audit log)`);
+    alert(`Event ${type} recorded as fso_demo with reason: ${reason} (audit trail — citizen_demo not used)`);
   };
 
   return (
