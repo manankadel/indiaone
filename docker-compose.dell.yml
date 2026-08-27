@@ -1,0 +1,21 @@
+services:
+  food-suraksha:
+    build: .
+    image: food-suraksha:latest
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      FOOD_DATABASE_URL: ${FOOD_DATABASE_URL}
+      FOOD_DATABASE_SSL: "false"
+      FOOD_DATABASE_POOL_MAX: "10"
+      FOOD_AUTHORITY_API_KEY: ${FOOD_AUTHORITY_API_KEY}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+    ports:
+      - "127.0.0.1:3020:3000"
+    networks:
+      - blueblood_internal
+
+networks:
+  blueblood_internal:
+    external: true

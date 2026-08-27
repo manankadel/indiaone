@@ -6,6 +6,6 @@ export async function GET() {
     app: "indiaone",
     time: new Date().toISOString(),
     env: { hasOpenAI: !!process.env.OPENAI_API_KEY, model: process.env.OPENAI_MODEL ?? "gpt-4o-mini" },
-    note: "All cases synthetic, stored in browser. No gov call.",
+    note: "Food-safety cases use the configured server database and verified event history.",
   });
 }

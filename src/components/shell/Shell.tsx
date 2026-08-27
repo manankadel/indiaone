@@ -3,7 +3,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Shield, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { StoreProvider } from "@/lib/store";
 import { I18nProvider, useI18n, SUPPORTED } from "@/lib/i18n/context";
 import type { Locale } from "@/lib/i18n/dictionary";
 
@@ -71,7 +70,7 @@ function TopbarInner() {
             ))}
           </div>
           <Link href="/food" onClick={()=>setOpen(false)} className="block rounded-full bg-[#DC2626] text-white text-center py-3 font-semibold">Report food risk</Link>
-          <p className="text-xs text-zinc-500 pt-2">Photo + location first. All cases are synthetic demo data.</p>
+          <p className="text-xs text-zinc-500 pt-2">Photo + location first. Your report stays private while it is reviewed.</p>
         </div>
       )}
     </header>
@@ -81,12 +80,11 @@ function TopbarInner() {
 export default function Shell({ children }: { children: React.ReactNode }) {
   return (
     <I18nProvider>
-      <StoreProvider>
-        <TopbarInner />
+      <TopbarInner />
         <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6">
           <div className="py-3 flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-zinc-200 px-3 py-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />Prototype live · All mocked</span>
-            <span className="hidden sm:inline text-zinc-500">Food safety only · Hinglish + Hindi + English · No real data</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-zinc-200 px-3 py-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />Food safety service</span>
+            <span className="hidden sm:inline text-zinc-500">Food safety · Hindi + Marathi + English · Privacy first</span>
             <Link href="/disclosures" className="ml-auto text-xs font-medium underline decoration-dotted underline-offset-4">How we built it →</Link>
           </div>
         </div>
@@ -102,12 +100,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
               <p className="mt-2 text-zinc-600">Food emergency: contact your local authority. Immediate danger: <a href="tel:112" className="font-semibold">112</a>. We never call for you.</p>
             </div>
             <div className="text-zinc-600">
-              <div>Photo, GPS and inspection outcomes shown here are synthetic.</div>
-              <div className="mt-2">Voice is optional; text and fixture selection remain available.</div>
+              <div>We never publish your name, phone number or exact home location.</div>
+              <div className="mt-2">You can report by photo, voice or text.</div>
             </div>
           </div>
         </footer>
-      </StoreProvider>
     </I18nProvider>
   );
 }

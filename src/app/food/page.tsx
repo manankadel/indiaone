@@ -1,9 +1,7 @@
 "use client";
-import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Shield, Package, Store, Truck, HeartPulse, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { createFoodCase, saveCase } from "@/lib/foodRepo";
 import type { FoodCategory } from "@/lib/foodTypes";
 
 const CATS: { id: FoodCategory; title: string; desc: string; icon: any; chips: string[] }[] = [
@@ -16,28 +14,23 @@ const CATS: { id: FoodCategory; title: string; desc: string; icon: any; chips: s
 export default function FoodPage() {
   const router = useRouter();
 
-  const start = (cat: FoodCategory) => {
-    const c = createFoodCase(cat);
-    // Pre-seed with one fixture per category for demo
-    if (cat === "packaged") c.evidenceIds = ["fx_milk_packet"];
-    if (cat === "premises") c.evidenceIds = ["fx_hotel_kitchen"];
-    if (cat === "delivery") c.evidenceIds = ["fx_zepto_store"];
-    if (cat === "illness") c.evidenceIds = ["fx_milk_packet", "fx_hotel_kitchen"];
-    c.status = "evidence_received";
-    saveCase(c);
-    router.push(`/food/report/${c.id}`);
+  const start = async (cat: FoodCategory) => {
+    const response = await fetch("/api/food/cases", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ category: cat }) });
+    if (!response.ok) return;
+    const { data } = await response.json();
+    router.push(`/food/report/${data.id}`);
   };
 
   return (
     <div className="mx-auto max-w-[880px] px-4 sm:px-6 py-6">
       <div className="inline-flex items-center gap-2 rounded-full bg-red-50 border border-red-200 px-3 py-1 text-xs font-semibold text-red-700">
-        <Shield size={12} /> PRD 8.2 — Choose what happened — food-only citizen flow
+        <Shield size={12} /> Food safety
       </div>
       <h1 className="mt-3 text-[30px] font-semibold tracking-tight leading-none">What did you see or experience?</h1>
-      <p className="text-sm text-zinc-600 mt-1">Tap one. You can add “Other” later — no long narrative required. All cases are synthetic demo data.</p>
+      <p className="text-sm text-zinc-600 mt-1">Choose the closest option. We’ll ask only what is needed to send a clear report.</p>
 
       <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-3 text-sm text-amber-900">
-        Not sure if this is FSSAI, State FDA or municipal? We will route it or explain why we cannot — and show what happens next. We never claim to be FSSAI.
+        Not sure who handles it? That’s okay. We’ll identify the right food-safety authority from the place and type of problem.
       </div>
 
       <div className="mt-6 grid sm:grid-cols-2 gap-4">
@@ -61,15 +54,7 @@ export default function FoodPage() {
         })}
       </div>
 
-      <div className="mt-6 rounded-2xl border border-zinc-200 bg-white p-4 flex items-center justify-between">
-        <div className="text-sm">
-          <div className="font-medium">Already have a reference?</div>
-          <div className="text-zinc-600">Track a synthetic case: try <Link href="/food/track/milk" className="underline">milk</Link>, <Link href="/food/track/hotel" className="underline">hotel</Link>, <Link href="/food/track/zepto" className="underline">zepto</Link></div>
-        </div>
-        <Link href="/" className="rounded-full border border-zinc-300 bg-white px-4 py-2 text-sm font-medium">Home</Link>
-      </div>
-
-      <p className="mt-3 text-xs text-center text-zinc-500">PRD Release 0 — credible prototype: citizen evidence → deterministic triage → mock routing → public timeline. No lab claim from photo.</p>
+      <p className="mt-6 text-xs text-center text-zinc-500">If someone is seriously ill or in immediate danger, seek medical help first.</p>
     </div>
   );
 }

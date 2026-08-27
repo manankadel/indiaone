@@ -4,35 +4,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { loadCase, loadEvents, saveCaseWithActor } from "@/lib/foodRepo";
+import type { FoodCase, FoodEvent } from "@/lib/foodTypes";
 
 export default function AuthorityCasePage() {
   const { id } = useParams<{ id: string }>();
-  const [c, setC] = useState<ReturnType<typeof loadCase>>(null);
-  const [events, setEvents] = useState<ReturnType<typeof loadEvents>>([]);
+  const [c, setC] = useState<FoodCase | null>(null);
+  const [events, setEvents] = useState<FoodEvent[]>([]);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(()=> {
-    const loaded = loadCase(id);
-    setC(loaded);
-    setEvents(loadEvents(id));
+    fetch("/api/food/authority/session").then(r=>r.json()).then(session=>{ setAuthenticated(Boolean(session.authenticated)); if (session.authenticated) fetch(`/api/food/cases/${encodeURIComponent(id)}`).then(r=>r.ok ? r.json() : null).then(result=>{ setC(result?.data ?? null); setEvents(result?.events ?? []); }); });
   }, [id]);
+
+  const signIn = async () => { const response = await fetch("/api/food/authority/session", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ code }) }); if (!response.ok) { setError("Access code was not accepted."); return; } setAuthenticated(true); const result = await fetch(`/api/food/cases/${encodeURIComponent(id)}`).then(r=>r.json()); setC(result.data ?? null); setEvents(result.events ?? []); };
+  if (authenticated === false) return <div className="mx-auto max-w-[520px] px-4 sm:px-6 py-16"><h1 className="text-2xl font-semibold">Food-safety officer access</h1><p className="mt-2 text-sm text-zinc-600">Sign in with your authorised officer access code to open this case.</p><div className="mt-6 flex gap-2"><input value={code} onChange={e=>setCode(e.target.value)} type="password" placeholder="Officer access code" className="flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-sm"/><button onClick={signIn} className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white">Continue</button></div>{error && <p className="mt-2 text-sm text-red-700">{error}</p>}</div>;
+  if (authenticated === null) return <div className="mx-auto max-w-[880px] px-4 sm:px-6 py-10 text-sm text-zinc-600">Checking officer access…</div>;
 
   if (!c) return <div className="mx-auto max-w-[880px] px-4 sm:px-6 py-10">Case not found in this browser. <Link href="/authority/queue" className="underline">Back to queue</Link></div>;
 
   const act = (type: string, reason: string) => {
-    // P0 fix: authority actions must be server-validated and recorded as officer, not citizen. For demo, require simple password gate.
-    const pw = typeof window !== "undefined" ? window.prompt("Officer demo password (hint: demo123) — in production: RBAC + MFA") : null;
-    if (pw !== "demo123") {
-      alert("Demo auth failed — use demo123. Production requires MFA + role check.");
-      return;
-    }
-    const updated = { ...c, status: type as any, updatedAt: new Date().toISOString() };
-    saveCaseWithActor(updated, "fso_demo", "fso");
-    // Append explicit event with reason code for audit
-    const stored = loadCase(id);
-    setC(stored);
-    setEvents(loadEvents(id));
-    alert(`Event ${type} recorded as fso_demo with reason: ${reason} (audit trail — citizen_demo not used)`);
+    const actionId = type === "assigned" ? "inspection" : type === "inspection_completed" ? "inspection" : type === "clarification_requested" ? "triage" : "outcome";
+    const updated = { ...c, status: type as any, actionPlan: (c.actionPlan ?? []).map(action => action.id === actionId ? { ...action, status: type === "inspection_completed" ? "completed" as const : "in_progress" as const } : action), updatedAt: new Date().toISOString() };
+    fetch(`/api/food/cases/${encodeURIComponent(id)}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ case: updated, actorId: "fso", actorRole: "fso", reasonCode: reason }) }).then(r=>r.json()).then(result=>{ setC(result.data); setEvents(result.events ?? []); });
   };
 
   return (
@@ -51,6 +46,16 @@ export default function AuthorityCasePage() {
             <Button variant="outline" onClick={()=>act("inspection_completed","Checklist completed — finding recorded")}>Record inspection</Button>
           </div>
           <div className="mt-2 text-xs text-zinc-500">Each action requires reason code + audit event per PRD — not silent status change.</div>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4 border-red-200">
+        <CardContent className="p-4">
+          <div className="text-xs font-semibold tracking-widest text-zinc-500">CASE ACTION PLAN</div>
+          <div className="mt-3 grid gap-2 text-sm">
+            {(c.actionPlan ?? []).map(action => <div key={action.id} className="rounded-xl border border-zinc-200 bg-zinc-50 p-3"><div className="font-medium">{action.title}</div><div className="text-xs text-zinc-600 mt-1">{action.description}</div><div className="text-[11px] text-zinc-400 mt-1">Owner: {action.owner.replace("_", " ")} · Status: {action.status}</div></div>)}
+          </div>
+          <div className="mt-3 text-xs text-zinc-500">Linked citizen submissions: {c.linkedSubmissionCount ?? 1} · Incident: {c.incidentId ?? "Unlinked"}</div>
         </CardContent>
       </Card>
 

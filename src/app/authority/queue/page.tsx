@@ -2,17 +2,22 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/Card";
-import { loadAllCases } from "@/lib/foodRepo";
 import type { FoodCase } from "@/lib/foodTypes";
 
 export default function AuthorityQueuePage() {
   const [cases, setCases] = useState<FoodCase[]>([]);
-  useEffect(()=> setCases(loadAllCases()), []);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
+  useEffect(()=> { fetch("/api/food/authority/session").then(r=>r.json()).then(session=>{ setAuthenticated(Boolean(session.authenticated)); if (session.authenticated) fetch("/api/food/cases").then(r=>r.json()).then(result=>setCases(result.data ?? [])); }); }, []);
+  const signIn = async () => { const response = await fetch("/api/food/authority/session", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ code }) }); if (!response.ok) { setError("Access code was not accepted."); return; } setAuthenticated(true); const result = await fetch("/api/food/cases").then(r=>r.json()); setCases(result.data ?? []); };
+  if (authenticated === false) return <div className="mx-auto max-w-[520px] px-4 sm:px-6 py-16"><h1 className="text-2xl font-semibold">Food-safety officer access</h1><p className="mt-2 text-sm text-zinc-600">This workspace is for authorised food-safety staff. Citizens can report or track a case from the main menu.</p><div className="mt-6 flex gap-2"><input value={code} onChange={e=>setCode(e.target.value)} type="password" placeholder="Officer access code" className="flex-1 rounded-xl border border-zinc-300 px-3 py-2 text-sm"/><button onClick={signIn} className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white">Continue</button></div>{error && <p className="mt-2 text-sm text-red-700">{error}</p>}</div>;
+  if (authenticated === null) return <div className="mx-auto max-w-[1160px] px-4 sm:px-6 py-10 text-sm text-zinc-600">Checking officer access…</div>;
   return (
     <div className="mx-auto max-w-[1160px] px-4 sm:px-6 py-6">
-      <div className="text-xs font-semibold tracking-widest text-zinc-500">AUTHORITY — QUEUE (PRD 9.1) · Mock auth</div>
+      <div className="text-xs font-semibold tracking-widest text-zinc-500">AUTHORITY — CASE QUEUE</div>
       <h1 className="mt-2 text-2xl font-semibold tracking-tight">Officer queue — priority, map, duplicates</h1>
-      <p className="text-sm text-zinc-600 mt-1">Filter: district, commodity, hazard. Action requires reason code + audit event. Demo: browser-local only.</p>
+      <p className="text-sm text-zinc-600 mt-1">Cases are ordered by urgency. Open a case to assign an officer, record action and publish a verified update.</p>
 
       <div className="mt-4 flex gap-2 text-xs">
         <span className="rounded-full bg-white border border-zinc-200 px-3 py-1">Filter: All</span>
@@ -22,7 +27,7 @@ export default function AuthorityQueuePage() {
       </div>
 
       <div className="mt-4 grid gap-3">
-        {cases.length===0 && <Card><CardContent className="p-6 text-sm text-zinc-600">No cases in this browser. Create one at <Link href="/food" className="underline">/food</Link> → it appears here (same device). Production: Postgres + PostGIS.</CardContent></Card>}
+        {cases.length===0 && <Card><CardContent className="p-6 text-sm text-zinc-600">No open cases are assigned to this queue.</CardContent></Card>}
         {cases.map(c => (
           <Link key={c.id} href={`/authority/cases/${c.id}`}>
             <Card className="hover:shadow-md transition">
@@ -41,7 +46,7 @@ export default function AuthorityQueuePage() {
       </div>
 
       <div className="mt-6 rounded-xl border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-600">
-        Production: RBAC + MFA, PostgreSQL + PostGIS, event log immutable. No synthetic case leaves browser — officer sees only permissioned queue.
+        Officer actions are permissioned and recorded in the case history. Citizens see only verified public updates.
       </div>
     </div>
   );

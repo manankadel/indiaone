@@ -31,9 +31,21 @@ export type FoodCase = {
   facts: import("./types").ExtractedFact[];
   statement: string;
   risk?: { severity: number; exposure: number; urgency: number; evidenceQuality: number; priority: string; reasons: string[] };
-  routing?: { authority: string; reason: string; capability: "live"|"manual_handoff"|"demo"; nextAction: string };
+  routing?: { authority: string; reason: string; capability: "live"|"manual_handoff"; nextAction: string };
   createdAt: string;
   updatedAt: string;
+  incidentId?: string;
+  linkedSubmissionCount?: number;
+  actionPlan?: FoodAction[];
+};
+
+export type FoodAction = {
+  id: string;
+  owner: "authority" | "public_health" | "laboratory" | "business" | "citizen";
+  title: string;
+  description: string;
+  status: "pending" | "in_progress" | "completed" | "not_required";
+  dueLabel: string;
 };
 
 export type FoodEvidence = {

@@ -9,11 +9,11 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "Mundhe Food Suraksha — Report food safety risks",
   description:
-    "Independent Build What Moves India prototype for evidence-led food-safety reporting, inspection routing and public action tracking. All data synthetic. No government affiliation.",
+    "Report a food-safety concern with evidence and follow the steps taken by the responsible authority.",
   metadataBase: new URL("https://indiaone.vercel.app"),
   openGraph: {
     title: "Mundhe Food Suraksha — Photo se action",
-    description: "Report a food-safety risk with a photo, location and one tap. All actions are mocked.",
+    description: "Report a food-safety concern with a photo, location and a clear description of what happened.",
     type: "website",
   },
 };
