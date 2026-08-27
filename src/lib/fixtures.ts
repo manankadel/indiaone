@@ -7,6 +7,32 @@ export const EVIDENCE_FIXTURES: EvidenceFixture[] = [
   { id: "fx_email", type: "email", title: "Bank Alert Email", preview: "Email", excerpt: "Alert: UPI transaction of INR 48,500 to UPI ID collect@oksbi succeeded. Ref 321768904512. Not you? Call 1800-258-xxxx." },
   { id: "fx_card_alert", type: "sms", title: "ICICI Card Alert", preview: "ICICI", excerpt: "Alert: Your ICICI Card XX4521 was used for USD 149.99 at WALMART INTL on 26-Aug-26 09:15 AM. Not you? Call 18002600." },
   { id: "fx_wallet_sms", type: "sms", title: "Paytm Wallet SMS", preview: "Paytm", excerpt: "Rs.7,500 debited from Paytm Wallet to merchant pay@paytm on 25-Aug-26 18:20. Ref PTM88201923. Wallet balance Rs.430." },
+  { id: "fx_milk_packet", type: "receipt", title: "Milk Packet — No FSSAI", preview: "🥛", excerpt: "Amul-like packet, MRP ₹28, no FSSAI number, mfg 20-Aug-26, village shop Beed. Photo GPS 18.98,75.78" },
+  { id: "fx_hotel_kitchen", type: "url", title: "Hotel Kitchen — Gutkha + Dirty", preview: "🏨", excerpt: "Shiv Sagar Hotel, Nagpur — gutkha sale at counter, kitchen with cockroaches, FSSAI 11524035001234 expired 2024" },
+  { id: "fx_zepto_store", type: "receipt", title: "Zepto Dark Store — No License Display", preview: "⚡", excerpt: "Zepto Store, Pune — 2026 FDA raid: no FSSAI display, milk storage 12°C vs required 4°C, stock ₹3.2L" },
+];
+
+// Food — Mundhe FDA nationwide (1131 inspections, ₹49.57cr seized, 56 licenses suspended, 904 raids — Indian Express July 2026)
+export const FOOD_FIXTURES = [
+  { id: "fd_milk", evidenceIds: ["fx_milk_packet"], label: "Milk — No FSSAI" },
+  { id: "fd_hotel", evidenceIds: ["fx_hotel_kitchen"], label: "Hotel — Gutkha + Expired License" },
+  { id: "fd_zepto", evidenceIds: ["fx_zepto_store"], label: "Dark Store — Cold Chain Fail" },
+];
+export const SEEDED_FOOD_A: ExtractedFact[] = [
+  { id: "fd1", field: "product", label: "Product", value: "Milk packet — no FSSAI", sourceEvidenceId: "fx_milk_packet", sourceExcerpt: "no FSSAI number", confidence: "high", status: "pending" },
+  { id: "fd2", field: "violation_type", label: "Violation", value: "No FSSAI license + suspected adulteration", sourceEvidenceId: "fx_milk_packet", sourceExcerpt: "no FSSAI number", confidence: "high", status: "pending" },
+  { id: "fd3", field: "shop_name", label: "Shop", value: "Village Kirana, Beed — GPS 18.98,75.78", sourceEvidenceId: "fx_milk_packet", sourceExcerpt: "village shop Beed", confidence: "high", status: "pending" },
+  { id: "fd4", field: "fssai_number", label: "FSSAI", value: "Not displayed / expired", sourceEvidenceId: "fx_milk_packet", sourceExcerpt: "no FSSAI number", confidence: "high", status: "pending" },
+];
+export const SEEDED_FOOD_B: ExtractedFact[] = [
+  { id: "fd5", field: "shop_name", label: "Shop", value: "Shiv Sagar Hotel, Nagpur", sourceEvidenceId: "fx_hotel_kitchen", sourceExcerpt: "Shiv Sagar Hotel", confidence: "high", status: "pending" },
+  { id: "fd6", field: "violation_type", label: "Violation", value: "Gutkha sale + hygiene fail", sourceEvidenceId: "fx_hotel_kitchen", sourceExcerpt: "gutkha sale at counter", confidence: "high", status: "pending" },
+  { id: "fd7", field: "fssai_number", label: "FSSAI", value: "11524035001234 (expired 2024)", sourceEvidenceId: "fx_hotel_kitchen", sourceExcerpt: "11524035001234 expired 2024", confidence: "high", status: "pending" },
+];
+export const SEEDED_FOOD_C: ExtractedFact[] = [
+  { id: "fd8", field: "shop_name", label: "Shop", value: "Zepto Dark Store, Pune", sourceEvidenceId: "fx_zepto_store", sourceExcerpt: "Zepto Store, Pune", confidence: "high", status: "pending" },
+  { id: "fd9", field: "violation_type", label: "Violation", value: "No display + cold chain 12°C vs 4°C", sourceEvidenceId: "fx_zepto_store", sourceExcerpt: "milk storage 12°C vs required 4°C", confidence: "high", status: "pending" },
+  { id: "fd10", field: "fssai_number", label: "Stock value", value: "₹3.2L", sourceEvidenceId: "fx_zepto_store", sourceExcerpt: "stock ₹3.2L", confidence: "medium", status: "pending" },
 ];
 
 // Seeded facts for three distinct fraud stories (audit requirement: three seeded cases)
@@ -70,6 +96,12 @@ export const SEEDED_CASES: Record<string, { label: string; transaction: NonNulla
     facts: SEEDED_FACTS_C,
     statement: SEEDED_STATEMENT_C,
   },
+};
+
+export const SEEDED_FOOD_CASES: Record<string, { label: string; evidenceIds: string[]; facts: ExtractedFact[]; shop: string; violation: string; }> = {
+  milk: { label: "Milk — No FSSAI · Beed", evidenceIds: ["fx_milk_packet"], facts: SEEDED_FOOD_A, shop: "Village Kirana, Beed", violation: "No FSSAI + adulteration suspect" },
+  hotel: { label: "Hotel — Gutkha + Expired · Nagpur", evidenceIds: ["fx_hotel_kitchen"], facts: SEEDED_FOOD_B, shop: "Shiv Sagar Hotel, Nagpur", violation: "Gutkha + hygiene + expired 11524035001234" },
+  zepto: { label: "Zepto — Cold Chain · Pune", evidenceIds: ["fx_zepto_store"], facts: SEEDED_FOOD_C, shop: "Zepto Dark Store, Pune", violation: "No display + 12°C vs 4°C, ₹3.2L stock" },
 };
 
 export const MOCK_REFERENCES = { bank: "BANK-ALERT-MOCK-77319", portal: "IND-CYBER-2026-88471" };

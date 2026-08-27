@@ -23,13 +23,13 @@ export default function Home() {
         <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-6 items-start">
           <div>
             <div className="flex flex-wrap gap-2 mb-3">
-              <Pill tone="accent">Flagship · Fraud First Aid</Pill>
-              <Pill>90 sec · Hinglish</Pill>
-              <Pill>Tap, don’t type</Pill>
+              <Pill tone="accent">FLAGSHIP · Mundhe Food Suraksha · Nationwide</Pill>
+              <Pill>1 photo → 72h action</Pill>
+              <Pill>Tukaram Mundhe model</Pill>
             </div>
-            <div className="text-xs font-semibold tracking-[0.16em] text-zinc-500">{t("hero.kicker")}</div>
-            <h1 className="mt-1 text-[34px] sm:text-[48px] font-[650] tracking-[-0.03em] leading-[0.92]">{t("hero.title1")}<br />{t("hero.title2")}<br /><span className="text-[#FF5A1F]">{t("hero.accent")}</span></h1>
-            <p className="mt-3 text-[16px] leading-6 text-zinc-700 max-w-[560px]">{t("hero.desc")}</p>
+            <div className="text-xs font-semibold tracking-[0.16em] text-zinc-500">Tukaram Mundhe — FDA 1,131 raids, ₹49.57cr seized · Nationwide now</div>
+            <h1 className="mt-1 text-[34px] sm:text-[48px] font-[650] tracking-[-0.03em] leading-[0.92]">Milawat dikha?<br />Photo bhejo.<br /><span className="text-[#DC2626]">72h me action.</span></h1>
+            <p className="mt-3 text-[16px] leading-6 text-zinc-700 max-w-[560px]">Mundhe style — no tolerance, time-bound, owner public. Maharashtra me 56 licences suspended, ab poore India me. 1 photo, GPS auto, FSSAI auto-check, public timeline.</p>
 
             <div className="mt-4 rounded-[16px] border border-zinc-200 bg-white p-3">
               <div className="text-xs font-semibold tracking-widest text-zinc-500">VOICE — Bolo, type nahi</div>
@@ -53,21 +53,21 @@ export default function Home() {
             </div>
 
             <div id="start" className="mt-4 rounded-[20px] border border-zinc-200 bg-white p-4 sm:p-5 shadow-sm">
-              <div className="text-xs font-semibold tracking-widest text-zinc-500">{t("hero.what")}</div>
+              <div className="text-xs font-semibold tracking-widest text-zinc-500">MUNDHE FOOD — YAHAN SE START</div>
               <div className="mt-3 grid gap-3">
-                <button onClick={() => { setStatus("contain"); router.push("/case/demo/contain"); }} className="group flex items-center justify-between rounded-2xl bg-zinc-900 text-white px-5 py-4 hover:bg-black text-left">
+                <button onClick={() => router.push("/food")} className="group flex items-center justify-between rounded-2xl bg-[#DC2626] text-white px-5 py-4 hover:bg-[#B91C1C] text-left">
                   <span>
-                    <span className="block text-[19px] font-semibold">{t("hero.cta.primary")}</span>
-                    <span className="block text-sm text-white/70">{t("hero.cta.sub")}</span>
+                    <span className="block text-[19px] font-semibold">Milawat dikha? Photo bhejo 📸</span>
+                    <span className="block text-sm text-white/80">Doodh / Hotel / Dark store — GPS auto, FSSAI auto-check</span>
                   </span>
-                  <span className="h-10 w-10 grid place-items-center rounded-full bg-white text-zinc-900 group-hover:translate-x-0.5 transition"><ArrowRight size={18} /></span>
+                  <span className="h-10 w-10 grid place-items-center rounded-full bg-white text-[#DC2626] group-hover:translate-x-0.5 transition"><ArrowRight size={18} /></span>
                 </button>
-                <div className="grid grid-cols-2 gap-3">
-                  <button onClick={()=>router.push("/services/irctc")} className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-left hover:bg-white"><div className="text-sm font-medium">Train WL hai</div><div className="text-xs text-zinc-500">IRCTC →</div></button>
-                  <button onClick={()=>router.push("/services/epfo")} className="rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-left hover:bg-white"><div className="text-sm font-medium">Job change</div><div className="text-xs text-zinc-500">EPFO →</div></button>
-                </div>
+                <button onClick={() => { setStatus("contain"); router.push("/case/demo/contain"); }} className="group flex items-center justify-between rounded-2xl bg-zinc-900 text-white px-5 py-3 hover:bg-black text-left">
+                  <span><span className="block text-[15px] font-semibold">Paise kat gaye? — Fraud First Aid</span><span className="block text-xs text-white/60">Second slice — same engine</span></span>
+                  <ArrowRight size={16} />
+                </button>
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1.5 text-emerald-800 flex items-center gap-1.5"><Check size={14} /> {t("hero.demo")}</span>
+                  <span className="rounded-full bg-red-50 border border-red-200 px-3 py-1.5 text-red-700 flex items-center gap-1.5"><Check size={14} /> 3 food cases ready — no typing</span>
                   <Link href="/login" className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 hover:bg-zinc-50">Reviewer: citizen@indiaone.demo</Link>
                 </div>
               </div>
@@ -81,32 +81,32 @@ export default function Home() {
           </div>
 
           <Card className="overflow-hidden">
-            <div className="bg-zinc-900 text-white px-4 py-3 flex items-center justify-between text-xs">
-              <span className="flex items-center gap-2"><ShieldAlert size={14} /> Fraud First Aid — 1930 pehle</span><span className="opacity-70">mock</span>
+            <div className="bg-[#DC2626] text-white px-4 py-3 flex items-center justify-between text-xs">
+              <span className="flex items-center gap-2"><ShieldAlert size={14} /> Mundhe Food — 1,131 raids nationwide pattern</span><span className="opacity-70">mock</span>
             </div>
             <CardContent className="p-4 space-y-3">
-              <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 flex gap-3">
-                <Phone size={18} className="mt-0.5 text-amber-700" />
+              <div className="rounded-xl bg-red-50 border border-red-200 p-3 flex gap-3">
+                <Phone size={18} className="mt-0.5 text-red-700" />
                 <div className="text-sm leading-5">
-                  <div className="font-semibold text-amber-900">Paise abhi kate? — 1930 pe call karo</div>
-                  <div className="text-amber-800">Hum details taiyaar rakhenge. Hum call nahi karte.</div>
-                  <a href="tel:1930" className="mt-2 inline-flex rounded-full bg-amber-600 text-white px-3 py-1.5 text-xs font-semibold">1930 Call</a>
+                  <div className="font-semibold text-red-900">Hotel ganda? Doodh me paani? — Photo bhejo</div>
+                  <div className="text-red-800">GPS se ward auto, FSSAI auto-check, 72h me public action. Cost owner se.</div>
+                  <button onClick={()=>router.push("/food")} className="mt-2 inline-flex rounded-full bg-[#DC2626] text-white px-3 py-1.5 text-xs font-semibold">FDA Photo bhejo</button>
                 </div>
               </div>
               <div className="rounded-xl border border-zinc-200 p-3">
-                <div className="text-xs font-semibold tracking-widest text-zinc-500">ABHI KYA KARNA — 1 tap me done</div>
+                <div className="text-xs font-semibold tracking-widest text-zinc-500">MUNDHE STYLE — 3 cheeze public</div>
                 <ul className="mt-2 space-y-2 text-sm">
-                  {["1930 pe call","Bank ko apne card ke number se bolo","UPI/Card block karo","SMS delete mat karo"].map(t => (
-                    <li key={t} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-zinc-900" />{t}</li>
+                  {["Officer ka naam public (suspend hua toh dikhega)","72h SLA — time-bound, result-oriented","Cost owner se — taxpayer nahi bharega"].map(t => (
+                    <li key={t} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#DC2626]" />{t}</li>
                   ))}
                 </ul>
               </div>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3"><Clock size={14} /><div className="font-medium mt-1">Time bachao</div><div className="text-zinc-600">Pehle 30 min = contain</div></div>
-                <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3"><FileText size={14} /><div className="font-medium mt-1">1 record</div><div className="text-zinc-600">Har jagah reuse</div></div>
+                <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3"><Clock size={14} /><div className="font-medium mt-1">1,131 raids</div><div className="text-zinc-600">₹49.57cr seized, 56 suspend</div></div>
+                <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3"><FileText size={14} /><div className="font-medium mt-1">904 locations</div><div className="text-zinc-600">Blinkit/Zepto bhi</div></div>
               </div>
-              <Button variant="accent" size="lg" className="w-full" onClick={() => { setStatus("contain"); router.push("/case/demo/contain"); }}>Demo se continue <ArrowRight size={16} /></Button>
-              <div className="text-[11px] text-zinc-500 flex items-center gap-1.5"><Eye size={12} />Hinglish default — short. Mock data only. Tap to confirm.</div>
+              <Button variant="accent" size="lg" className="w-full bg-[#DC2626] hover:bg-[#B91C1C]" onClick={() => router.push("/food")}>Food photo se start <ArrowRight size={16} /></Button>
+              <div className="text-[11px] text-zinc-500 flex items-center gap-1.5"><Eye size={12} />Maharashtra FDA → Nationwide. Photo + GPS only. No address typing.</div>
             </CardContent>
           </Card>
         </div>

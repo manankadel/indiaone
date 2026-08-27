@@ -1,4 +1,4 @@
-export type ServiceSlug = "fraud" | "irctc" | "income-tax" | "cpgrams" | "gst" | "epfo" | "mca" | "umang" | "parivahan" | "rti";
+export type ServiceSlug = "fraud" | "fda" | "irctc" | "income-tax" | "cpgrams" | "gst" | "epfo" | "mca" | "umang" | "parivahan" | "rti";
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
@@ -15,7 +15,7 @@ export type ServiceDefinition = {
 
 export type ExtractedFact = {
   id: string;
-  field: "amount" | "transaction_reference" | "occurred_at" | "institution" | "recipient" | "channel" | "suspect_contact" | "url";
+  field: "amount" | "transaction_reference" | "occurred_at" | "institution" | "recipient" | "channel" | "suspect_contact" | "url" | "fssai_number" | "violation_type" | "shop_name" | "product";
   label: string;
   value: string;
   sourceEvidenceId: string;

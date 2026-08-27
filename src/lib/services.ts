@@ -2,12 +2,30 @@ import { ServiceDefinition } from "./types";
 
 export const SERVICES: ServiceDefinition[] = [
   {
+    slug: "fda",
+    title: "Mundhe Food Suraksha — Nationwide",
+    short: "Food adulteration & hygiene — photo se action",
+    problem: "Doodh me paani? Shop ka FSSAI nahi? Photo bhejo, 72h me action dekho — Mundhe style.",
+    persona: "Family, nagpur to kochi, kirana / hotel / dark store",
+    badge: "FLAGSHIP · Mundhe Model · Nationwide",
+    color: "#DC2626",
+    intents: ["Doodh me milawat", "Hotel ganda / no license", "Gutkha bech raha"],
+    workflow: [
+      { id: "photo", title: "Photo", kind: "evidence" },
+      { id: "violation", title: "Violation", kind: "ai_review" },
+      { id: "shop", title: "Shop", kind: "form" },
+      { id: "review", title: "Review", kind: "consent" },
+      { id: "track", title: "Track FDA", kind: "result" },
+    ],
+    mockArtifact: "MH-FDA-2026-1131 · ₹49.57cr seized, 56 licenses suspended (Mundhe 2026)",
+  },
+  {
     slug: "fraud",
     title: "Fraud First Aid",
     short: "Financial fraud — first hour",
     problem: "Money left my account and I don't know who to call first.",
     persona: "Asha, 42, UPI user, mid-range Android",
-    badge: "Flagship · Judged journey",
+    badge: "Slice · First hour",
     color: "#FF5A1F",
     intents: ["Money left my account", "Card charged I didn't do", "UPI scam"],
     workflow: [
