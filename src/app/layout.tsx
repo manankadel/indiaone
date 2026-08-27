@@ -7,13 +7,13 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "IndiaOne — Tell us what happened. We find the right service.",
+  title: "Mundhe Food Suraksha — Report food safety risks",
   description:
-    "Independent prototype for Build What Moves India. One intent-first system for 10 public services. Fraud First Aid flagship: contain loss, structure evidence, simulate reporting. All data synthetic. No government affiliation.",
+    "Independent Build What Moves India prototype for evidence-led food-safety reporting, inspection routing and public action tracking. All data synthetic. No government affiliation.",
   metadataBase: new URL("https://indiaone.vercel.app"),
   openGraph: {
-    title: "IndiaOne — Fraud First Aid",
-    description: "Independent prototype. One system, ten services. Tell us what happened.",
+    title: "Mundhe Food Suraksha — Photo se action",
+    description: "Report a food-safety risk with a photo, location and one tap. All actions are mocked.",
     type: "website",
   },
 };

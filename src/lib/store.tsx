@@ -8,7 +8,7 @@ const STORE_KEY = "indiaone_case_v1";
 function makeDemoCase(): CitizenCase {
   return {
     id: "demo",
-    serviceSlug: "fraud",
+    serviceSlug: "fda",
     status: "draft",
     createdAt: new Date().toISOString(),
     transaction: {
@@ -64,7 +64,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const loadSeededCase = useCallback((key: keyof typeof SEEDED_CASES) => {
     const seed = SEEDED_CASES[key];
     if (!seed) return;
-    const nc: CitizenCase = { id: "demo", serviceSlug: "fraud", status: "transaction", createdAt: new Date().toISOString(), transaction: seed.transaction, evidenceIds: seed.evidenceIds, facts: seed.facts, statement: seed.statement };
+    const nc: CitizenCase = { id: "demo", serviceSlug: "fda", status: "transaction", createdAt: new Date().toISOString(), transaction: seed.transaction, evidenceIds: seed.evidenceIds, facts: seed.facts, statement: seed.statement };
     setC(nc);
   }, []);
   return <Ctx.Provider value={{ c, setStatus, setCase, updateFact, mockSubmit, reset, loadSeededCase }}>{children}</Ctx.Provider>;

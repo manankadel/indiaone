@@ -13,7 +13,8 @@ function TopbarInner() {
   const pathname = usePathname();
   const { locale, setLocale, t } = useI18n();
   const nav = [
-    { href: "/services", label: t("nav.services") },
+    { href: "/food", label: "Report food risk" },
+    { href: "/food/track?k=milk", label: "Public tracker" },
     { href: "/disclosures", label: t("nav.disclosures") },
     { href: "/build-log", label: t("nav.buildlog") },
   ];
@@ -38,7 +39,7 @@ function TopbarInner() {
             <button onClick={()=>setLocale("en")} className={`rounded-full px-3 py-1 text-xs font-semibold ${locale==="en" ? "bg-zinc-900 text-white" : "text-zinc-600 hover:bg-zinc-100"}`}>English</button>
             <button onClick={()=>setShowMore(v=>!v)} className="rounded-full px-2 py-1 text-xs font-medium text-zinc-500 hover:bg-zinc-100">+5 more</button>
           </div>
-          <Link href="/#start" className="ml-1 rounded-full bg-[#FF5A1F] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#E8541B]">Start</Link>
+          <Link href="/food" className="ml-1 rounded-full bg-[#DC2626] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#B91C1C]">Report now</Link>
         </nav>
         <div className="flex items-center gap-2 md:hidden">
           <div className="flex items-center rounded-full border border-zinc-200 bg-white p-1">
@@ -69,8 +70,8 @@ function TopbarInner() {
               <button key={l} onClick={()=>{setLocale(l); setOpen(false);}} className={`rounded-full border px-3 py-1 text-xs ${locale===l?"bg-zinc-900 text-white":"bg-white"}`}>{l.toUpperCase()}</button>
             ))}
           </div>
-          <Link href="/#start" onClick={()=>setOpen(false)} className="block rounded-full bg-[#FF5A1F] text-white text-center py-3 font-semibold">Start — Paise kat gaye</Link>
-          <p className="text-xs text-zinc-500 pt-2">Default: Hinglish (roman) — judges + urban India same page. Hindi/English full, others AI-beta.</p>
+          <Link href="/food" onClick={()=>setOpen(false)} className="block rounded-full bg-[#DC2626] text-white text-center py-3 font-semibold">Report food risk</Link>
+          <p className="text-xs text-zinc-500 pt-2">Photo + location first. All cases are synthetic demo data.</p>
         </div>
       )}
     </header>
@@ -85,7 +86,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto w-full max-w-[1160px] px-4 sm:px-6">
           <div className="py-3 flex flex-wrap items-center gap-2 text-xs">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-zinc-200 px-3 py-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />Prototype live · All mocked</span>
-            <span className="hidden sm:inline text-zinc-500">Hinglish default · 8 languages · No real data</span>
+            <span className="hidden sm:inline text-zinc-500">Food safety only · Hinglish + Hindi + English · No real data</span>
             <Link href="/disclosures" className="ml-auto text-xs font-medium underline decoration-dotted underline-offset-4">How we built it →</Link>
           </div>
         </div>
@@ -94,15 +95,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <div className="mx-auto max-w-[1160px] px-4 sm:px-6 py-10 grid md:grid-cols-3 gap-8 text-sm">
             <div>
               <div className="font-semibold">IndiaOne</div>
-              <p className="text-zinc-600 mt-2 leading-6">One place, 10 services. Hinglish default — because India texts in Hinglish. Hindi + English full, 5 more AI-beta. No govt affiliation.</p>
+              <p className="text-zinc-600 mt-2 leading-6">A citizen evidence and action layer for food safety. Independent hackathon prototype; no government affiliation.</p>
             </div>
             <div>
               <div className="font-medium">Emergency (real)</div>
-              <p className="mt-2 text-zinc-600">Fraud: <a href="tel:1930" className="font-semibold text-zinc-900">1930</a> · Emergency: <a href="tel:112" className="font-semibold">112</a>. We never call for you.</p>
+              <p className="mt-2 text-zinc-600">Food emergency: contact your local authority. Immediate danger: <a href="tel:112" className="font-semibold">112</a>. We never call for you.</p>
             </div>
             <div className="text-zinc-600">
-              <div>Language: Hinglish is source of truth. Others keep Hinglish side-by-side for verification.</div>
-              <div className="mt-2">Mock: citizen@indiaone.demo / demo1234 · Voice is tap, text is baseline.</div>
+              <div>Photo, GPS and inspection outcomes shown here are synthetic.</div>
+              <div className="mt-2">Voice is optional; text and fixture selection remain available.</div>
             </div>
           </div>
         </footer>

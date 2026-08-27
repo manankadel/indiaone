@@ -3,27 +3,22 @@ import { Card, CardContent } from "@/components/ui/Card";
 export default function Disclosures() {
   return (
     <div className="mx-auto max-w-[1160px] px-4 sm:px-6 py-6">
-      <div className="text-xs font-semibold tracking-widest text-zinc-500">HONESTY · REAL / MOCKED / PLANNED</div>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight">What works, what’s mocked, what production needs</h1>
-      <p className="mt-2 text-zinc-600 max-w-3xl">This prototype never calls a live government system, never uses private APIs, never stores real Aadhaar/PAN/OTP/payment. All integrations are deterministic simulations.</p>
+      <div className="text-xs font-semibold tracking-widest text-zinc-500">HONESTY · REAL / MOCKED / PLANNED — FOOD SAFETY ONLY</div>
+      <h1 className="mt-2 text-3xl font-semibold tracking-tight">What works, what’s mocked for Food Suraksha</h1>
+      <p className="mt-2 text-zinc-600 max-w-3xl">Maharashtra FDA pattern (1,131 inspections, ₹49.57cr seized, 56 licences suspended — Indian Express July 2026) now as nationwide mock. No live FSSAI/FDA call, no scraping, no real photo stored.</p>
 
       <div className="mt-6 grid lg:grid-cols-3 gap-4">
-        <Card className="border-emerald-200"><CardContent className="p-5"><div className="font-semibold text-emerald-800">Works in prototype</div><ul className="mt-2 text-sm text-zinc-700 list-disc pl-5 space-y-1"><li>Intent-first routing, workflow engine, form validation, autosave, case timeline</li><li>Synthetic fixture selection, source-linked extraction (deterministic fallback)</li><li>Editable statement, missing-evidence rules, review, idempotent mock submit</li><li>Responsive 360px, keyboard, focus, 200% zoom, reduced-motion</li><li>Public link, seeded demo, resume, expiry 24h</li></ul></CardContent></Card>
-        <Card className="border-amber-200 bg-amber-50"><CardContent className="p-5"><div className="font-semibold text-amber-900">Mocked (deterministic simulation)</div><ul className="mt-2 text-sm text-amber-900 list-disc pl-5 space-y-1"><li>Bank alert: accepted mock ref BANK-ALERT-MOCK-77319</li><li>Portal submission: acknowledged mock ref IND-CYBER-2026-88471</li><li>OTP: “Send demo code” reveals/demo-accepts — no SMS</li><li>Status transitions: demo-seeded timeline</li><li>Payment, e-verification, SRN/PNR/ACK numbers: synthetic</li></ul></CardContent></Card>
-        <Card><CardContent className="p-5"><div className="font-semibold">Production dependency</div><ul className="mt-2 text-sm text-zinc-700 list-disc pl-5 space-y-1"><li>Authorized bank notification channel (contracted, authenticated)</li><li>Official cybercrime submission/status API if offered & approved</li><li>Identity: approved government identity + DigiLocker consent</li><li>Audit, data residency, CERT-In 180-day log, DPDP compliance</li><li>Ops owners: routing, retention, abuse, appeal, correction requests</li></ul></CardContent></Card>
+        <Card className="border-emerald-200"><CardContent className="p-5"><div className="font-semibold text-emerald-800">Works in prototype</div><ul className="mt-2 text-sm text-zinc-700 list-disc pl-5 space-y-1"><li>Photo + GPS chip (auto ward), violation chips, FSSAI auto-check (mock extract)</li><li>3 synthetic food cases: milk (Beed), hotel (Nagpur), Zepto dark store (Pune)</li><li>72h public timeline with officer name public (Mundhe walk transparency)</li><li>Hinglish default + 8-lang, tap-only, voice optional</li><li>Public link, no login required, 24h browser-only</li></ul></CardContent></Card>
+        <Card className="border-amber-200 bg-amber-50"><CardContent className="p-5"><div className="font-semibold text-amber-900">Mocked</div><ul className="mt-2 text-sm text-amber-900 list-disc pl-5 space-y-1"><li>FDA notice: mock MH-FDA-2026-1131</li><li>Seizure/demolition: mock — cost from owner (CIDCO 1,804 precedent)</li><li>FSSAI verification: mock excerpt from photo</li><li>Status: Day 0/1/3 seeded timeline</li><li>Photo: picsum mock, not your shop</li></ul></CardContent></Card>
+        <Card><CardContent className="p-5">        <div className="font-semibold">Production needs</div><ul className="mt-2 text-sm text-zinc-700 list-disc pl-5 space-y-1"><li>FSSAI central + State FDA authorized API (GPS to Ward auto-route)</li><li>Officer assignment with public name + 72h SLA enforcement</li><li>Notice under FSS Act / MRTP with digital signature</li><li>Evidence vault with hash, 180d CERT-In log, DPDP consent</li><li>Central dashboard: 1,131 pattern scaled nationwide</li></ul></CardContent></Card>
       </div>
 
       <div className="mt-6 rounded-[20px] border border-zinc-200 bg-white p-6">
-        <div className="font-semibold">Safety labels — shown before & after every simulated action</div>
-        <div className="mt-3 grid sm:grid-cols-2 gap-3 text-sm">
-          <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3">“Simulate report submission” — never “Submit complaint”</div>
-          <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3">“Mock/simulated” beside every reference ID</div>
-          <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3">“We cannot contact 1930/bank” — persistent banner</div>
-          <div className="rounded-xl bg-zinc-50 border border-zinc-200 p-3">Evidence gate: “Demo only — do not upload real data”</div>
-        </div>
+        <div className="font-semibold">Mundhe principle — system beats person</div>
+        <p className="text-sm text-zinc-600 mt-1">25 transfers in 21 yrs shows transfer is punishment for honesty. Digital system makes 72h SLA, owner public, cost from owner — honesty does not depend on posting.</p>
       </div>
 
-      <div className="mt-6 text-xs text-zinc-500">Authoritative sources: cybercrime.gov.in (1930), GIGW 3.0, WCAG 2.2, DPDP Act 2023, CERT-In Directions. No live system tested. No scraping.</div>
+      <div className="mt-6 text-xs text-zinc-500">Sources: Indian Express July 2026 (Mundhe FDA), Business Standard, CIDCO (1,804 razed), NMMC (12,687 illegal), The Quint (Navi Mumbai walk). No live FDA system called.</div>
     </div>
   );
 }

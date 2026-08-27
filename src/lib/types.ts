@@ -1,4 +1,4 @@
-export type ServiceSlug = "fraud" | "fda" | "irctc" | "income-tax" | "cpgrams" | "gst" | "epfo" | "mca" | "umang" | "parivahan" | "rti";
+export type ServiceSlug = "fda";
 
 export type ServiceDefinition = {
   slug: ServiceSlug;
