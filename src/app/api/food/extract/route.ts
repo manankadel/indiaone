@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
   }
 
   const endpoint = provider === "groq" ? "https://api.groq.com/openai/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-  const model = process.env.FOOD_AI_MODEL ?? (provider === "groq" ? "meta-llama/llama-4-scout-17b-16e-instruct" : process.env.OPENAI_MODEL ?? "gpt-4o-mini");
+  const model = process.env.FOOD_AI_MODEL ?? (provider === "groq" ? "qwen/qwen3.6-27b" : process.env.OPENAI_MODEL ?? "gpt-4o-mini");
   const evidenceContent = [
     { type: "text", text: `Evidence IDs: ${evidenceIds.join(", ") || "none"}. Extract only fields you can actually read. Return JSON: {"fields":[{"field":"fssai_number|violation_type|shop_name|product|batch_number|expiry_date","value":"...","confidence":"high|medium|low","sourceEvidenceId":"..."}]}` },
     ...evidence.filter(item => typeof item.dataUrl === "string" && item.dataUrl.startsWith("data:image/")).map(item => ({ type: "image_url", image_url: { url: item.dataUrl as string } })),
