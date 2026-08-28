@@ -14,10 +14,13 @@ services:
       GROQ_API_KEY: ${GROQ_API_KEY}
       FOOD_AI_PROVIDER: ${FOOD_AI_PROVIDER:-groq}
       FOOD_AI_MODEL: ${FOOD_AI_MODEL:-qwen/qwen3.6-27b}
+      EVIDENCE_STORAGE_PATH: /var/lib/food-suraksha/evidence
     ports:
       - "127.0.0.1:3020:3000"
     networks:
       - blueblood_internal
+    volumes:
+      - /opt/food-suraksha/data/evidence:/var/lib/food-suraksha/evidence
 
 networks:
   blueblood_internal:

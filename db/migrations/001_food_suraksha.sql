@@ -27,6 +27,19 @@ CREATE TABLE IF NOT EXISTS food_events (
   occurred_at TIMESTAMPTZ NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS food_evidence (
+  id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL REFERENCES food_cases(id),
+  filename TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  sha256 TEXT NOT NULL,
+  storage_path TEXT NOT NULL,
+  captured_at TIMESTAMPTZ NOT NULL,
+  redaction_state TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
+);
+
 CREATE INDEX IF NOT EXISTS food_cases_updated_idx ON food_cases (updated_at DESC);
 CREATE INDEX IF NOT EXISTS food_cases_category_status_idx ON food_cases (category, status);
 CREATE INDEX IF NOT EXISTS food_events_case_time_idx ON food_events (case_id, occurred_at);
+CREATE INDEX IF NOT EXISTS food_evidence_case_time_idx ON food_evidence (case_id, created_at);

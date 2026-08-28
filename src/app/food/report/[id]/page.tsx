@@ -52,8 +52,14 @@ export default function FoodReportPage() {
     const hashHex = Array.from(new Uint8Array(hashArray)).map(b=>b.toString(16).padStart(2,"0")).join("").slice(0,16);
     const preview = URL.createObjectURL(file);
     const dataUrl = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = reject; reader.readAsDataURL(file); });
-    const uploadId = `upload_${Date.now()}_${hashHex.slice(0,6)}`;
-    setUploaded(u => [...u, { id: uploadId, name: file.name, sha256: hashHex, preview, dataUrl }]);
+    const form = new FormData();
+    form.set("caseId", c.id);
+    form.set("file", file);
+    const uploadResponse = await fetch("/api/food/evidence", { method: "POST", body: form });
+    const uploadJson = await uploadResponse.json().catch(() => ({}));
+    if (!uploadResponse.ok || !uploadJson.data?.id) { URL.revokeObjectURL(preview); alert(uploadJson.message ?? "This file could not be saved. Please try again."); return; }
+    const uploadId = String(uploadJson.data.id);
+    setUploaded(u => [...u, { id: uploadId, name: file.name, sha256: String(uploadJson.data.sha256 ?? hashHex), preview, dataUrl }]);
     setSelectedEvidence(s => [...s, uploadId]);
   };
 

@@ -20,10 +20,12 @@ export function ensureFoodSchema() {
     CREATE TABLE IF NOT EXISTS food_cases (id TEXT PRIMARY KEY, public_reference TEXT NOT NULL UNIQUE, category TEXT NOT NULL, status TEXT NOT NULL, payload JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL, updated_at TIMESTAMPTZ NOT NULL);
     CREATE TABLE IF NOT EXISTS food_submissions (id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES food_cases(id), payload JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL);
     CREATE TABLE IF NOT EXISTS food_events (id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES food_cases(id), type TEXT NOT NULL, actor_id TEXT NOT NULL, actor_role TEXT NOT NULL, visibility TEXT NOT NULL, reason_code TEXT, payload JSONB, occurred_at TIMESTAMPTZ NOT NULL);
+    CREATE TABLE IF NOT EXISTS food_evidence (id TEXT PRIMARY KEY, case_id TEXT NOT NULL REFERENCES food_cases(id), filename TEXT NOT NULL, mime_type TEXT NOT NULL, sha256 TEXT NOT NULL, storage_path TEXT NOT NULL, captured_at TIMESTAMPTZ NOT NULL, redaction_state TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL);
     CREATE INDEX IF NOT EXISTS food_cases_updated_idx ON food_cases (updated_at DESC);
     CREATE INDEX IF NOT EXISTS food_cases_status_idx ON food_cases (status);
     CREATE INDEX IF NOT EXISTS food_events_case_idx ON food_events (case_id, occurred_at ASC);
     CREATE INDEX IF NOT EXISTS food_submissions_case_idx ON food_submissions (case_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS food_evidence_case_idx ON food_evidence (case_id, created_at DESC);
   `).then(() => undefined);
   return schemaReady;
 }
@@ -45,6 +47,25 @@ export async function getDatabaseCase(idOrReference: string) {
   await ensureFoodSchema();
   const result = await getPool().query("SELECT payload FROM food_cases WHERE id = $1 OR public_reference = $1 LIMIT 1", [idOrReference]);
   return result.rows[0] ? rowCase(result.rows[0] as { payload: unknown }) : null;
+}
+
+export async function insertFoodEvidence(input: { id: string; caseId: string; filename: string; mimeType: string; sha256: string; storagePath: string; capturedAt: string; redactionState: string; createdAt: string }) {
+  await ensureFoodSchema();
+  await getPool().query(
+    `INSERT INTO food_evidence (id, case_id, filename, mime_type, sha256, storage_path, captured_at, redaction_state, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+    [input.id, input.caseId, input.filename, input.mimeType, input.sha256, input.storagePath, input.capturedAt, input.redactionState, input.createdAt],
+  );
+  return input;
+}
+
+export async function listFoodEvidence(caseId: string) {
+  await ensureFoodSchema();
+  const result = await getPool().query(
+    `SELECT id, case_id AS "caseId", filename, mime_type AS "mimeType", sha256, captured_at AS "capturedAt", redaction_state AS "redactionState", created_at AS "createdAt" FROM food_evidence WHERE case_id = $1 ORDER BY created_at ASC`,
+    [caseId],
+  );
+  return result.rows;
 }
 
 export async function listDatabaseCases() {
