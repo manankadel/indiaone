@@ -2,7 +2,8 @@ import { randomUUID, createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
-import { getDatabaseCase, databaseConfigured, insertFoodEvidence, listFoodEvidence } from "@/lib/foodDatabase";
+import { getDatabaseCase, databaseConfigured, getFoodEvidence, insertFoodEvidence, listFoodEvidence } from "@/lib/foodDatabase";
+import { authorityCookieName, verifyAuthorityToken } from "@/lib/authorityAuth";
 import { makeRequestId } from "@/lib/api";
 
 export const runtime = "nodejs";
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
   const bytes = Buffer.from(await file.arrayBuffer());
   const sha256 = createHash("sha256").update(bytes).digest("hex");
   const id = `ev_${randomUUID()}`;
-  const extension = path.extname(file.name).toLowerCase() || (file.type === "application/pdf" ? ".pdf" : ".bin");
+  const extension = ({ "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "application/pdf": ".pdf" } as Record<string, string>)[file.type] ?? ".bin";
   const root = process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence";
   const relativePath = path.join(c.id, `${id}${extension}`);
   const absolutePath = path.join(root, relativePath);
@@ -38,7 +39,16 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const requestId = req.headers.get("x-request-id") ?? makeRequestId();
-  const caseId = new URL(req.url).searchParams.get("caseId");
+  const params = new URL(req.url).searchParams;
+  const evidenceId = params.get("id");
+  if (evidenceId) {
+    if (!verifyAuthorityToken(req.cookies.get(authorityCookieName())?.value)) return NextResponse.json({ code: "authority_auth_required", requestId }, { status: 401 });
+    const evidence = await getFoodEvidence(evidenceId);
+    if (!evidence) return NextResponse.json({ code: "evidence_not_found", requestId }, { status: 404 });
+    const bytes = await import("node:fs/promises").then(fs => fs.readFile(path.join(process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence", evidence.storagePath)));
+    return new NextResponse(bytes, { headers: { "content-type": evidence.mimeType, "cache-control": "private, no-store", "x-content-sha256": evidence.sha256 } });
+  }
+  const caseId = params.get("caseId");
   if (!caseId || !databaseConfigured()) return NextResponse.json({ code: "case_required", requestId }, { status: 400 });
   const c = await getDatabaseCase(caseId);
   if (!c) return NextResponse.json({ code: "case_not_found", requestId }, { status: 404 });

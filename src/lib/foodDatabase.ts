@@ -68,6 +68,15 @@ export async function listFoodEvidence(caseId: string) {
   return result.rows;
 }
 
+export async function getFoodEvidence(id: string) {
+  await ensureFoodSchema();
+  const result = await getPool().query(
+    `SELECT id, case_id AS "caseId", filename, mime_type AS "mimeType", sha256, storage_path AS "storagePath", captured_at AS "capturedAt", redaction_state AS "redactionState", created_at AS "createdAt" FROM food_evidence WHERE id = $1 LIMIT 1`,
+    [id],
+  );
+  return result.rows[0] ?? null;
+}
+
 export async function listDatabaseCases() {
   await ensureFoodSchema();
   const result = await getPool().query("SELECT payload FROM food_cases ORDER BY updated_at DESC LIMIT 500");
