@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 
 const COOKIE = "food_authority_session";
 
@@ -23,4 +24,25 @@ export function verifyAuthorityToken(token: string | undefined) {
 }
 export function authorityCodeValid(code: string | undefined) {
   return Boolean(code && process.env.FOOD_AUTHORITY_API_KEY && code === process.env.FOOD_AUTHORITY_API_KEY);
+}
+
+let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
+export async function verifyBluebloodSession(token: string | undefined) {
+  const issuer = process.env.BLUEBLOOD_ID_ISSUER || "https://id.bluebloodstudio.com";
+  const audience = process.env.BLUEBLOOD_ID_JWT_AUDIENCE || "food-suraksha";
+  if (!token) return false;
+  try {
+    jwks ??= createRemoteJWKSet(new URL(`${issuer}/api/.well-known/jwks.json`));
+    const { payload } = await jwtVerify(token, jwks, { issuer, audience });
+    const role = String(payload.role ?? payload.scope ?? "");
+    return payload.isAdmin === true || ["fso", "do", "food_authority", "super_admin"].some(value => role.split(/[ ,]/).includes(value));
+  } catch {
+    return false;
+  }
+}
+
+export async function isAuthorityRequest(req: { cookies: { get(name: string): { value: string } | undefined }; headers: { get(name: string): string | null } }) {
+  if (verifyAuthorityToken(req.cookies.get(authorityCookieName())?.value)) return true;
+  if (req.headers.get("x-authority-key") === process.env.FOOD_AUTHORITY_API_KEY) return true;
+  return verifyBluebloodSession(req.cookies.get("bb_session")?.value);
 }

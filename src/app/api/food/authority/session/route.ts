@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authorityCodeValid, authorityCookieName, createAuthorityToken } from "@/lib/authorityAuth";
+import { authorityCodeValid, authorityCookieName, createAuthorityToken, verifyBluebloodSession } from "@/lib/authorityAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  return NextResponse.json({ authenticated: Boolean(req.cookies.get(authorityCookieName())?.value) });
+  const authenticated = Boolean(req.cookies.get(authorityCookieName())?.value) || await verifyBluebloodSession(req.cookies.get("bb_session")?.value);
+  return NextResponse.json({ authenticated });
 }
 
 export async function POST(req: NextRequest) {

@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
 import { getDatabaseCase, databaseConfigured, getFoodEvidence, insertFoodEvidence, listFoodEvidence } from "@/lib/foodDatabase";
-import { authorityCookieName, verifyAuthorityToken } from "@/lib/authorityAuth";
+import { isAuthorityRequest } from "@/lib/authorityAuth";
 import { makeRequestId } from "@/lib/api";
 
 export const runtime = "nodejs";
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
   const params = new URL(req.url).searchParams;
   const evidenceId = params.get("id");
   if (evidenceId) {
-    if (!verifyAuthorityToken(req.cookies.get(authorityCookieName())?.value)) return NextResponse.json({ code: "authority_auth_required", requestId }, { status: 401 });
+    if (!(await isAuthorityRequest(req))) return NextResponse.json({ code: "authority_auth_required", requestId }, { status: 401 });
     const evidence = await getFoodEvidence(evidenceId);
     if (!evidence) return NextResponse.json({ code: "evidence_not_found", requestId }, { status: 404 });
     const bytes = await import("node:fs/promises").then(fs => fs.readFile(path.join(process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence", evidence.storagePath)));

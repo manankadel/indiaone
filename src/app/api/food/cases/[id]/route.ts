@@ -3,7 +3,7 @@ import { makeRequestId } from "@/lib/api";
 import { getServerCase, getServerEvents, putServerCase } from "@/lib/serverFoodRepo";
 import type { FoodCase, FoodEvent } from "@/lib/foodTypes";
 import { databaseConfigured, getDatabaseCase, getDatabaseEvents, updateDatabaseCase } from "@/lib/foodDatabase";
-import { authorityCookieName, verifyAuthorityToken } from "@/lib/authorityAuth";
+import { isAuthorityRequest } from "@/lib/authorityAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -23,8 +23,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const current = databaseConfigured() ? await getDatabaseCase(id) : getServerCase(id);
   if (!current) return NextResponse.json({ code: "not_found", requestId }, { status: 404 });
   const body = await req.json().catch(() => ({})) as { case?: Partial<FoodCase>; actorId?: string; actorRole?: FoodEvent["actorRole"]; reasonCode?: string };
-  const authoritySession = verifyAuthorityToken(req.cookies.get(authorityCookieName())?.value);
-  if (body.actorRole && body.actorRole !== "citizen" && process.env.NODE_ENV === "production" && !authoritySession && req.headers.get("x-authority-key") !== process.env.FOOD_AUTHORITY_API_KEY) {
+  const authoritySession = await isAuthorityRequest(req);
+  if (body.actorRole && body.actorRole !== "citizen" && process.env.NODE_ENV === "production" && !authoritySession) {
     return NextResponse.json({ code: "authority_auth_required", message: "Authorised officer access required", requestId }, { status: 401 });
   }
   const saved = databaseConfigured() ? await updateDatabaseCase({ ...current, ...(body.case ?? {}), id: current.id }, body.actorId ?? "citizen", body.actorRole ?? "citizen", body.reasonCode) : putServerCase({ ...current, ...(body.case ?? {}), id: current.id }, body.actorId ?? "citizen", body.actorRole ?? "citizen");

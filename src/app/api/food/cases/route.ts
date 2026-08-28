@@ -4,7 +4,7 @@ import { getServerCase, listServerCases, putServerCase } from "@/lib/serverFoodR
 import { createFoodCase } from "@/lib/foodRepo";
 import type { FoodCategory } from "@/lib/foodTypes";
 import { createDatabaseCase, databaseConfigured, getDatabaseCase, listDatabaseCases } from "@/lib/foodDatabase";
-import { authorityCookieName, verifyAuthorityToken } from "@/lib/authorityAuth";
+import { isAuthorityRequest } from "@/lib/authorityAuth";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const id = search.get("id");
   const q = search.get("q")?.toLowerCase().trim();
   if (process.env.NODE_ENV === "production" && !databaseConfigured()) return NextResponse.json({ code: "database_not_configured", message: "Service unavailable", requestId }, { status: 503 });
-  if (!id && process.env.NODE_ENV === "production" && !verifyAuthorityToken(req.cookies.get(authorityCookieName())?.value)) return NextResponse.json({ code: "authority_auth_required", message: "Authorised officer access required", requestId }, { status: 401 });
+  if (!id && process.env.NODE_ENV === "production" && !(await isAuthorityRequest(req))) return NextResponse.json({ code: "authority_auth_required", message: "Authorised officer access required", requestId }, { status: 401 });
   let data = databaseConfigured() ? (id ? await getDatabaseCase(id) : await listDatabaseCases()) : (id ? getServerCase(id) : listServerCases());
   if (!id && q && Array.isArray(data)) data = data.filter(c => `${c.publicReference} ${c.category} ${c.jurisdictionId} ${c.subject.name ?? ""} ${c.subject.fssaiNumber ?? ""}`.toLowerCase().includes(q));
   return NextResponse.json({ data, requestId }, { headers: { "x-request-id": requestId } });
