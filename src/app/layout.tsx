@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Report a food-safety concern with evidence and follow the steps taken by the responsible authority.",
   metadataBase: new URL("https://indiaone.vercel.app"),
+  manifest: "/manifest.json",
   openGraph: {
     title: "Mundhe Food Suraksha — Photo se action",
     description: "Report a food-safety concern with a photo, location and a clear description of what happened.",

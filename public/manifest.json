@@ -1,0 +1,14 @@
+{
+  "name": "Food Suraksha — Mundhe Model",
+  "short_name": "Food Suraksha",
+  "description": "Photo se action — food safety nationwide. Mundhe FDA model.",
+  "start_url": "/food",
+  "display": "standalone",
+  "background_color": "#FFFBF5",
+  "theme_color": "#DC2626",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "256x256", "type": "image/x-icon" }
+  ],
+  "lang": "hi",
+  "orientation": "portrait"
+}

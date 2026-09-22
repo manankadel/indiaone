@@ -27,5 +27,14 @@ export async function POST(req: NextRequest) {
   if (!body.category || !allowed.includes(body.category)) return NextResponse.json({ code: "invalid_category", message: "Choose a food-safety category", requestId }, { status: 400 });
   if (process.env.NODE_ENV === "production" && !databaseConfigured()) return NextResponse.json({ code: "database_not_configured", message: "Service unavailable", requestId }, { status: 503 });
   const saved = databaseConfigured() ? await createDatabaseCase(body.category) : putServerCase(createFoodCase(body.category));
-  return NextResponse.json({ data: saved, requestId }, { status: 201, headers: { "x-request-id": requestId } });
+  // Duplicate clustering: same category within 24h → cluster (PRD §18) — simple in-memory for pilot, production would use PostGIS + FSSAI
+  let duplicateInfo: { isDuplicate: boolean; clusterSize: number } | null = null;
+  if (databaseConfigured()) {
+    try {
+      const all = await listDatabaseCases();
+      const recent = all.filter(c => c.category === body.category && c.id !== saved.id && new Date(c.createdAt).getTime() > Date.now() - 24*60*60*1000);
+      if (recent.length > 0) duplicateInfo = { isDuplicate: true, clusterSize: recent.length + 1 };
+    } catch {}
+  }
+  return NextResponse.json({ data: { ...saved, duplicateCluster: duplicateInfo }, requestId }, { status: 201, headers: { "x-request-id": requestId } });
 }
