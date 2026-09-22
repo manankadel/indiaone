@@ -28,9 +28,9 @@ export async function POST(req: NextRequest) {
   const id = `ev_${randomUUID()}`;
   const extension = ({ "image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp", "application/pdf": ".pdf" } as Record<string, string>)[file.type] ?? ".bin";
   const root = process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence";
-  const relativePath = path.join(c.id, `${id}${extension}`);
-  const absolutePath = path.join(root, relativePath);
-  await mkdir(path.dirname(absolutePath), { recursive: true });
+  const relativePath = path.join(/*turbopackIgnore: true*/ c.id, `${id}${extension}`);
+  const absolutePath = path.join(/*turbopackIgnore: true*/ root, relativePath);
+  await mkdir(path.dirname(/*turbopackIgnore: true*/ absolutePath), { recursive: true });
   await writeFile(absolutePath, bytes, { flag: "wx" });
   const now = new Date().toISOString();
   const evidence = await insertFoodEvidence({ id, caseId: c.id, filename: file.name.slice(0, 180), mimeType: file.type, sha256, storagePath: relativePath, capturedAt: now, redactionState: "pending", createdAt: now });
@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
     if (!(await isAuthorityRequest(req))) return NextResponse.json({ code: "authority_auth_required", requestId }, { status: 401 });
     const evidence = await getFoodEvidence(evidenceId);
     if (!evidence) return NextResponse.json({ code: "evidence_not_found", requestId }, { status: 404 });
-    const bytes = await import("node:fs/promises").then(fs => fs.readFile(path.join(process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence", evidence.storagePath)));
+    const bytes = await import("node:fs/promises").then(fs => fs.readFile(path.join(/*turbopackIgnore: true*/ process.env.EVIDENCE_STORAGE_PATH || "/var/lib/food-suraksha/evidence", evidence.storagePath)));
     return new NextResponse(bytes, { headers: { "content-type": evidence.mimeType, "cache-control": "private, no-store", "x-content-sha256": evidence.sha256 } });
   }
   const caseId = params.get("caseId");
