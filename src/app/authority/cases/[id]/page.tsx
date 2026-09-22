@@ -71,6 +71,17 @@ export default function AuthorityCasePage() {
         </CardContent>
       </Card>
 
+      <Card className="mt-4 border-amber-200 bg-amber-50">
+        <CardContent className="p-4">
+          <div className="text-xs font-semibold tracking-widest text-zinc-500">SAMPLE CHAIN-OF-CUSTODY (PRD 9.4) — Lab</div>
+          <div className="mt-2 flex gap-2">
+            <Button variant="outline" size="sm" onClick={()=>act("sample_sent","Sample collected — sealed, barcode generated")}>Create sample seal + barcode</Button>
+            <span className="text-xs text-zinc-600 py-2">Custody: collected → sealed → transferred → lab opened → result signed</span>
+          </div>
+          <div className="mt-2 text-xs text-zinc-500">Barcode, seal, hash, lab result ingestion — PRD Lab chain. Demo stores as event.</div>
+        </CardContent>
+      </Card>
+
       <Card className="mt-4">
         <CardContent className="p-4">
           <div className="text-xs font-semibold tracking-widest text-zinc-500">EVENT LOG — immutable</div>

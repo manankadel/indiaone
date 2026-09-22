@@ -13,7 +13,7 @@ function TopbarInner() {
   const { locale, setLocale, t } = useI18n();
   const nav = [
     { href: "/food", label: "Report food risk" },
-    { href: "/food/track?k=milk", label: "Public tracker" },
+    { href: "/dashboard", label: "Public dashboard" },
     { href: "/disclosures", label: t("nav.disclosures") },
     { href: "/build-log", label: t("nav.buildlog") },
   ];
