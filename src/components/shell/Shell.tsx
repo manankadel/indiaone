@@ -12,10 +12,10 @@ function TopbarInner() {
   const pathname = usePathname();
   const { locale, setLocale, t } = useI18n();
   const nav = [
-    { href: "/food", label: "Report food risk" },
-    { href: "/dashboard", label: "Public dashboard" },
+    { href: "/food", label: "Report" },
+    { href: "/fbo", label: "For business" },
+    { href: "/dashboard", label: "Dashboard" },
     { href: "/disclosures", label: t("nav.disclosures") },
-    { href: "/build-log", label: t("nav.buildlog") },
   ];
   return (
     <header className="sticky top-0 z-40 backdrop-blur bg-[#FFFBF5]/80 border-b border-zinc-200">
